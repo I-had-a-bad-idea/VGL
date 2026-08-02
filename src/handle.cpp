@@ -40,7 +40,7 @@ VkDevice create_logical_device(std::vector<VkPhysicalDevice> devices, uint32_t d
 
 
 VkQueue get_device_queue(VkDevice device, uint32_t queue_family) {
-    VkQueue queue;
+    VkQueue queue {VK_NULL_HANDLE};
     vkGetDeviceQueue(device, queue_family, 0, &queue);
 
     return queue;

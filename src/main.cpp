@@ -11,5 +11,8 @@ int main() {
 
     VkDevice device = create_logical_device(devices, physical_device.device_index, queue_info.queue_CI);
     VkQueue queue = get_device_queue(device, queue_info.queue_family);
+
+    VmaAllocator allocator = setup_vma(instance, devices, physical_device.device_index, device);
+
     return 0;
 }

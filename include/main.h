@@ -4,3 +4,4 @@
 #include "device.h"
 #include "queues.h"
 #include "handle.h"
+#include "vma_setup.h"
