@@ -11,7 +11,7 @@ std::vector<VkQueueFamilyProperties> get_queue_families(std::vector<VkPhysicalDe
 }
 
 
-VkDeviceQueueCreateInfo get_queue_family_with_graphics_support(VkInstance instance, std::vector<VkPhysicalDevice> devices, uint32_t device_index,
+QueueInfo get_queue_family_with_graphics_support(VkInstance instance, std::vector<VkPhysicalDevice> devices, uint32_t device_index,
     std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support = true) {
     
     uint32_t queue_family {0};
@@ -36,5 +36,5 @@ VkDeviceQueueCreateInfo get_queue_family_with_graphics_support(VkInstance instan
         .pQueuePriorities = &qf_priorities
     };
 
-    return queue_CI;
+    return QueueInfo {.queue_family = queue_family, .queue_CI = queue_CI};
 }

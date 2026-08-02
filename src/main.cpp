@@ -3,11 +3,13 @@
 int main() {
     VkInstance instance = get_vulkan_instance("VulkanRenderLib");
     std::vector<VkPhysicalDevice> devices = get_devices(instance);
-    PhysicalDevice device = select_device(devices);
+    PhysicalDevice physical_device = select_device(devices);
 
-    std::vector<VkQueueFamilyProperties> queue_families = get_queue_families(devices, device.device_index);
+    std::vector<VkQueueFamilyProperties> queue_families = get_queue_families(devices, physical_device.device_index);
 
-    VkDeviceQueueCreateInfo queue_CI = get_queue_family_with_graphics_support(instance, devices, device.device_index, queue_families);
+    QueueInfo queue_info = get_queue_family_with_graphics_support(instance, devices, physical_device.device_index, queue_families);
 
+    VkDevice device = create_logical_device(devices, physical_device.device_index, queue_info.queue_CI);
+    VkQueue queue = get_device_queue(device, queue_info.queue_family);
     return 0;
 }
