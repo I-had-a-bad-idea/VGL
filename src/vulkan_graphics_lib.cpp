@@ -1,7 +1,7 @@
-#include "main.h"
+#include "vulkan_graphics_lib.h"
 
-int main() {
-    VkInstance instance = get_vulkan_instance("VulkanRenderLib");
+Renderer create_renderer(std::string name) {
+    VkInstance instance = get_vulkan_instance(name);
     std::vector<VkPhysicalDevice> devices = get_devices(instance);
     PhysicalDevice physical_device = select_device(devices);
 
@@ -14,5 +14,5 @@ int main() {
 
     VmaAllocator allocator = setup_vma(instance, devices, physical_device.device_index, device);
 
-    return 0;
+    return Renderer();
 }
