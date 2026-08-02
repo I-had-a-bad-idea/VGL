@@ -11,11 +11,11 @@ std::vector<VkPhysicalDevice> get_devices(VkInstance instance) {
     return devices;
 }
 
-PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t preferred_device_index = -1) {
+PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t preferred_device_index) {
     uint32_t device_count = devices.size();
 
     uint32_t device_index {0};
-    if (preferred_device_index != -1) {
+    if (preferred_device_index != UINT32_MAX) {
         device_index = preferred_device_index;
         assert(device_index < device_count);
     }

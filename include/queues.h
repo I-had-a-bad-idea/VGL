@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vulkan/vulkan.h>
 #include <SDL3/SDL_vulkan.h>
 
@@ -5,7 +7,7 @@
 
 #include "vk_check.hpp"
 
-typedef struct QueueInfo {
+struct QueueInfo {
     uint32_t queue_family;
     VkDeviceQueueCreateInfo queue_CI;
 };

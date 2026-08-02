@@ -1,4 +1,5 @@
-#define VMA_IMPLEMENTATION
+#pragma once
+
 #include <vma/vk_mem_alloc.h>
 
 #include <vector>

@@ -1,4 +1,7 @@
+#pragma once
+
 #include <vulkan/vulkan.h>
+#include <vma/vk_mem_alloc.h>
 
 #include <string>
 
@@ -11,4 +14,4 @@
 
 class Renderer {};
 
-Renderer create_renderer(std::string name);
+Renderer create_renderer(std::string name, int w, int h);
