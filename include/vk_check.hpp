@@ -7,3 +7,10 @@ static inline void vk_check(VkResult result) {
 		exit(result);
 	}
 }
+
+static inline void vk_check(bool result) {
+	if (!result) {
+		std::cerr << "Call returned an error\n";
+		exit(result);
+	}
+}

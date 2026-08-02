@@ -12,5 +12,5 @@ typedef struct PhysicalDevice {
     VkPhysicalDeviceProperties2 device_properties;
 };
 
-
-PhysicalDevice select_device(VkInstance instance, uint32_t preferred_device_index = -1);
+std::vector<VkPhysicalDevice> get_devices(VkInstance instance);
+PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t preferred_device_index = -1);

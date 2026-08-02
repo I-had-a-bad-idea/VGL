@@ -1,12 +1,18 @@
 #include "device.h"
 
 
-PhysicalDevice select_device(VkInstance instance, uint32_t preferred_device_index = -1) {
+std::vector<VkPhysicalDevice> get_devices(VkInstance instance) {
     uint32_t device_count {0};
 
     vk_check(vkEnumeratePhysicalDevices(instance, &device_count, nullptr));
     std::vector<VkPhysicalDevice> devices(device_count);
     vk_check(vkEnumeratePhysicalDevices(instance, &device_count, devices.data())); // get devices
+
+    return devices;
+}
+
+PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t preferred_device_index = -1) {
+    uint32_t device_count = devices.size();
 
     uint32_t device_index {0};
     if (preferred_device_index != -1) {
