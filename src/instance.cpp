@@ -1,4 +1,4 @@
-#include "include/instance.h"
+#include "instance.h"
 
 VkInstance get_vulkan_instance(std::string app_name) {
     if (app_name.length() == 0) {

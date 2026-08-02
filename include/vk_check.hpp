@@ -6,3 +6,4 @@ static inline void vk_check(VkResult result) {
 		std::cerr << "Vulkan call returned an error (" << result << ")\n";
 		exit(result);
 	}
+}
