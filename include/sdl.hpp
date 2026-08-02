@@ -5,11 +5,15 @@
 
 #include "vk_check.hpp"
 
-void init_sdl() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cerr << "Failed to initialize SDL: " << SDL_GetError() << "\n";
-        exit(EXIT_FAILURE);
+static inline void init_sdl() {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        std::cerr << "SDL_Init failed: " << SDL_GetError() << "\n";
+        exit(-1);
     }
 
-    vk_check(SDL_Vulkan_LoadLibrary(nullptr)); // Load Vulkan library
+    if (!SDL_Vulkan_LoadLibrary(nullptr)) {
+        std::cerr << "SDL_Vulkan_LoadLibrary failed: " 
+                  << SDL_GetError() << "\n";
+        exit(-1);
+    }
 }

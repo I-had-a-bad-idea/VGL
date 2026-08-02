@@ -1,12 +1,13 @@
 #pragma once
 
+#define VK_NO_PROTOTYPES
+#include "volk.hpp"
 #include <vulkan/vulkan.h>
 #include <vma/vk_mem_alloc.h>
 
 #include <string>
 
 #include "sdl.hpp"
-#include "volk.hpp"
 #include "instance.h"
 #include "device.h"
 #include "queues.h"

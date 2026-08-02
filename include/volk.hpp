@@ -5,10 +5,10 @@
 
 #include "vk_check.hpp"
 
-void init_volk() {
-    volkInitialize();
+static inline void init_volk() {
+    vk_check(volkInitialize());
 }
 
-void volk_load_instance(VkInstance instance) {
+static inline void volk_load_instance(VkInstance instance) {
     volkLoadInstance(instance);
 }
