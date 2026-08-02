@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include "sdl.hpp"
+#include "volk.hpp"
 #include "instance.h"
 #include "device.h"
 #include "queues.h"
