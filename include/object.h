@@ -16,6 +16,19 @@ struct Vertex {
     glm::vec2 uv;
 };
 
+class Mesh {
+    public:
+        Mesh(std::string filepath);
+        std::vector<Vertex> vertices {};
+        std::vector<uint16_t> indices {};
+};
+
+class Texture {
+    public:
+        Texture(std::string filepath);
+};
+
+
 class Object {
     public:
         Mesh mesh;
@@ -27,16 +40,4 @@ class Object {
     private:
         VmaAllocation v_buffer_allocation{ VK_NULL_HANDLE };
         VkBuffer v_buffer{ VK_NULL_HANDLE };
-};
-
-class Mesh {
-    public:
-        Mesh(std::string filepath);
-        std::vector<Vertex> vertices {};
-        std::vector<uint16_t> indices {};
-};
-
-class Texture {
-    public:
-        Texture(std::string filepath);
 };

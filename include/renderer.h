@@ -1,5 +1,8 @@
 #pragma once
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
 #include <SDL3/SDL.h>
@@ -90,6 +93,9 @@ private:
     // Shaders
     void create_shader_buffers();
 
+    // Sync objects
+    void create_sync_objects();
+
 private:
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -116,4 +122,8 @@ private:
 
     std::array<ShaderDataBuffer, max_frames_in_flight> shader_data_buffers;
     std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
+
+    std::array<VkFence, max_frames_in_flight> fences;
+    std::array<VkSemaphore, max_frames_in_flight> image_acquired_semaphores;
+    std::vector<VkSemaphore> render_complete_semaphores;
 };

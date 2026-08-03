@@ -38,4 +38,10 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Depth attachment...\n";
     depth_format = get_depth_format();
     create_depth_image_and_depth_image_view();
+
+    std::cout << "Creaing shader buffers...\n";
+    create_shader_buffers();
+
+    std::cout << "Creating sync objects (fences, semaphores)...\n";
+    create_sync_objects();
 }
