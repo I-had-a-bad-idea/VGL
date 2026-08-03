@@ -61,7 +61,7 @@ private:
     WindowData create_vulkan_surface_for_window();
     VkSurfaceCapabilitiesKHR get_surface_properties();
     VkSwapchainKHR create_swapchain(VkSurfaceCapabilitiesKHR surface_caps);
-    SwapchainData get_swapchain_data(VkSwapchainKHR swapchain, VkFormat image_format);
+    SwapchainData get_swapchain_data();
 
     // Memory
     VmaAllocator setup_vma();
@@ -79,7 +79,9 @@ private:
     SDL_Window* window = nullptr;
     WindowData window_data;
 
+    VkFormat image_format;
     VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+    SwapchainData swapchain_data;
 
     VmaAllocator allocator = nullptr;
 };

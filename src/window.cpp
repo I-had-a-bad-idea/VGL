@@ -43,8 +43,7 @@ VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps)
     if (surface_caps.currentExtent.width == 0xFFFFFFFF) { // special value indicating, that the surace size will be determined by window size
         swapchain_extent = { .width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y) };
     }
-    
-    const VkFormat image_format {VK_FORMAT_B8G8R8A8_SRGB};
+    image_format = VkFormat {VK_FORMAT_B8G8R8A8_SRGB};
     VkSwapchainCreateInfoKHR swapchain_CI {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .surface = window_data.surface,
@@ -65,7 +64,7 @@ VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps)
     return swapchain;
 }
 
-Renderer::SwapchainData Renderer::get_swapchain_data(VkSwapchainKHR swapchain, VkFormat image_format) {
+Renderer::SwapchainData Renderer::get_swapchain_data() {
     std::vector<VkImage> swapchain_images;
     std::vector<VkImageView> swapchain_image_views;
 

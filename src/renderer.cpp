@@ -32,6 +32,6 @@ Renderer::Renderer(std::string name, int w, int h) {
     VkSurfaceCapabilitiesKHR surface_caps = get_surface_properties();
 
     std::cout << "Creating swapchain...\n";
-    VkSwapchainKHR swapchain = create_swapchain(surface_caps);
-// SwapchainData get_swapchain_images(VkDevice device, VkSwapchainKHR swapchain, VkFormat image_format);
+    swapchain = create_swapchain(surface_caps);
+    swapchain_data = get_swapchain_data();
 }
