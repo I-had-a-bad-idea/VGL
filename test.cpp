@@ -6,6 +6,9 @@ int main() {
     std::cout << "Starting...\n";
     Renderer renderer = create_renderer("Test", 1280, 720);
     
+    // Wait 5s to see the window
+    SDL_Delay(5000);
+
     std::cout << "Ending...\n";
     return 0;
 }

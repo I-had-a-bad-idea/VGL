@@ -37,3 +37,53 @@ VkSurfaceCapabilitiesKHR get_surface_properties(std::vector<VkPhysicalDevice> de
 
     return surface_caps;
 }
+
+VkSwapchainKHR create_swapchain(VkDevice device, WindowData window_data, VkSurfaceCapabilitiesKHR surface_caps) {
+    VkExtent2D swapchain_extent{ surface_caps.currentExtent };
+    if (surface_caps.currentExtent.width == 0xFFFFFFFF) { // special value indicating, that the surace size will be determined by window size
+        swapchain_extent = { .width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y) };
+    }
+    
+    const VkFormat image_format {VK_FORMAT_B8G8R8A8_SRGB};
+    VkSwapchainCreateInfoKHR swapchain_CI {
+        .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+        .surface = window_data.surface,
+        .minImageCount = surface_caps.minImageCount,
+        .imageFormat = image_format,
+        .imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR,
+        .imageExtent {.width = swapchain_extent.width, .height = swapchain_extent.height},
+        .imageArrayLayers = 1,
+        .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+        .preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+        .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+        .presentMode = VK_PRESENT_MODE_FIFO_KHR // v-synced mode (only mode guaranteed)
+    };
+    
+    VkSwapchainKHR swapchain {VK_NULL_HANDLE};
+    vk_check(vkCreateSwapchainKHR(device, &swapchain_CI, nullptr, &swapchain));
+
+    return swapchain;
+}
+
+SwapchainData get_swapchain_data(VkDevice device, VkSwapchainKHR swapchain, VkFormat image_format) {
+    std::vector<VkImage> swapchain_images;
+    std::vector<VkImageView> swapchain_image_views;
+
+    uint32_t image_count {0};
+    vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr));
+    swapchain_images.resize(image_count);
+    vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, swapchain_images.data()));
+    swapchain_image_views.resize(image_count);
+	for (auto i = 0; i < image_count; i++) {
+		VkImageViewCreateInfo viewCI{
+            .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+            .image = swapchain_images[i],
+            .viewType = VK_IMAGE_VIEW_TYPE_2D,
+            .format = image_format,
+            .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1}
+        };
+		vk_check(vkCreateImageView(device, &viewCI, nullptr, &swapchain_image_views[i]));
+	}
+
+    return SwapchainData {.swapchain_images = swapchain_images, .swapchain_image_views = swapchain_image_views};
+}

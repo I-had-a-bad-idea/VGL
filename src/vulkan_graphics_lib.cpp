@@ -30,5 +30,10 @@ Renderer create_renderer(std::string name, int w, int h) {
     WindowData window_data = create_vulkan_surface_for_window(instance, window);
     VkSurfaceCapabilitiesKHR surface_caps = get_surface_properties(devices, physical_device.device_index, window_data.surface);
 
+    std::cout << "Creating swapchain...\n";
+    VkSwapchainKHR swapchain = create_swapchain(device, window_data, surface_caps);
+// VkSwapchainKHR create_swapchain(VkDevice device, WindowData window_data, VkSurfaceCapabilitiesKHR surface_caps);
+// SwapchainData get_swapchain_images(VkDevice device, VkSwapchainKHR swapchain, VkFormat image_format);
+
     return Renderer();
 }
