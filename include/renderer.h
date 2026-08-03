@@ -9,6 +9,7 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
+#include <array>
 
 #include "vk_check.hpp"
 #include "sdl.hpp"
@@ -16,9 +17,25 @@
 
 class Renderer {
 public:
+    static constexpr uint32_t max_frames_in_flight = 2;
     Renderer(std::string name, int w, int h);
 
 private:
+    struct ShaderData {
+        glm::mat4 projection;
+        glm::mat4 view;
+        glm::mat4 model[3];
+        glm::vec4 lightPos{ 0.0f, -10.0f, 10.0f, 0.0f };
+        uint32_t selected{1};
+    } shaderData{};
+
+    struct ShaderDataBuffer {
+        VmaAllocation allocation{ VK_NULL_HANDLE };
+        VmaAllocationInfo allocationInfo{};
+        VkBuffer buffer{ VK_NULL_HANDLE };
+        VkDeviceAddress deviceAddress{};
+    };
+
     struct QueueInfo {
         uint32_t queue_family;
         VkDeviceQueueCreateInfo queue_CI;
@@ -70,6 +87,9 @@ private:
     // Memory
     VmaAllocator setup_vma();
 
+    // Shaders
+    void create_shader_buffers();
+
 private:
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -93,4 +113,7 @@ private:
     VkImage depth_image;
     VmaAllocation depth_image_allocation;
     VkImageView depth_image_view;
+
+    std::array<ShaderDataBuffer, max_frames_in_flight> shader_data_buffers;
+    std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
 };
