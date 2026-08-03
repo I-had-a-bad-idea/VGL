@@ -11,8 +11,10 @@ LDFLAGS= \
 -lvulkan-1 \
 -lSDL3
 
-test:
-	$(CXX) $(CXXFLAGS) src/*.cpp test.cpp $(LDFLAGS) -o test
+SOURCES := $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp) test.cpp
+
+test: ${SOURCES}
+	$(CXX) $(CXXFLAGS) ${SOURCES} $(LDFLAGS) -o test
 
 
 compile-and-run-test: test
