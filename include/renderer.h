@@ -4,6 +4,11 @@
 #include <vma/vk_mem_alloc.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <string>
 #include <vector>
@@ -17,6 +22,12 @@
 class Renderer {
 public:
     Renderer(std::string name, int w, int h);
+
+    struct Vertex {
+        glm::vec3 pos;
+        glm::vec3 normal;
+        glm::vec2 uv;
+    };
 
 private:
     struct QueueInfo {
