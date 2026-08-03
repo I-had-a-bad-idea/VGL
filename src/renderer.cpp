@@ -24,7 +24,7 @@ Renderer::Renderer(std::string name, int w, int h) {
     graphics_queue = get_device_queue(queue_info.queue_family);
 
     std::cout << "Setting up VMA...\n";
-    VmaAllocator allocator = setup_vma();
+    allocator = setup_vma();
 
     std::cout << "Creating window...\n";
     window = create_window(name, w, h);
@@ -34,4 +34,8 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Creating swapchain...\n";
     swapchain = create_swapchain(surface_caps);
     swapchain_data = get_swapchain_data();
+
+    std::cout << "Depth attachment...\n";
+    depth_format = get_depth_format();
+    create_depth_image_and_depth_image_view();
 }

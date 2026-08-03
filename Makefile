@@ -12,3 +12,7 @@ LDFLAGS= \
 
 test:
 	$(CXX) $(CXXFLAGS) src/*.cpp test.cpp $(LDFLAGS) -o test
+
+
+compile-and-run-test: test
+	./test

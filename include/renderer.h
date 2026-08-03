@@ -63,6 +63,10 @@ private:
     VkSwapchainKHR create_swapchain(VkSurfaceCapabilitiesKHR surface_caps);
     SwapchainData get_swapchain_data();
 
+    // Depth attachment
+    VkFormat get_depth_format();
+    void create_depth_image_and_depth_image_view();
+
     // Memory
     VmaAllocator setup_vma();
 
@@ -83,5 +87,10 @@ private:
     VkSwapchainKHR swapchain = VK_NULL_HANDLE;
     SwapchainData swapchain_data;
 
-    VmaAllocator allocator = nullptr;
+    VmaAllocator allocator = VK_NULL_HANDLE;
+
+    VkFormat depth_format;
+    VkImage depth_image;
+    VmaAllocation depth_image_allocation;
+    VkImageView depth_image_view;
 };

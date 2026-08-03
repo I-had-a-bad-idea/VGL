@@ -86,3 +86,47 @@ Renderer::SwapchainData Renderer::get_swapchain_data() {
 
     return SwapchainData {.swapchain_images = swapchain_images, .swapchain_image_views = swapchain_image_views};
 }
+
+VkFormat Renderer::get_depth_format() {
+    std::vector<VkFormat> depth_format_list {VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT};
+    VkFormat depth_format {VK_FORMAT_UNDEFINED};
+
+    for (VkFormat& format : depth_format_list) {
+        VkFormatProperties2 format_properties {.sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2};
+        vkGetPhysicalDeviceFormatProperties2(physical_devices[device_index], format, &format_properties);
+        if (format_properties.formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+            depth_format = format;
+            break;
+        }
+    }
+    assert(depth_format != VK_FORMAT_UNDEFINED);
+
+    return depth_format;
+}
+
+void Renderer::create_depth_image_and_depth_image_view() {
+    VkImageCreateInfo depth_image_CI {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .imageType = VK_IMAGE_TYPE_2D,
+        .format = depth_format,
+		.extent{.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y), .depth = 1},
+        .mipLevels = 1,
+        .arrayLayers = 1,
+        .samples = VK_SAMPLE_COUNT_1_BIT,
+        .tiling = VK_IMAGE_TILING_OPTIMAL, // make sure the format (of image storing) is best suited for the GPU
+        .usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, // will be used as the depth attachment for render output
+        .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
+    };
+
+    VmaAllocationCreateInfo alloc_CI {.flags = VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT, .usage = VMA_MEMORY_USAGE_AUTO};
+    vk_check(vmaCreateImage(allocator, &depth_image_CI, &alloc_CI, &depth_image, &depth_image_allocation, nullptr));
+
+    VkImageViewCreateInfo depth_view_CI {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .image = depth_image,
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = depth_format,
+        .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .levelCount = 1, .layerCount = 1}
+    };
+    vk_check(vkCreateImageView(device, &depth_view_CI, nullptr, &depth_image_view));
+}
