@@ -17,7 +17,7 @@ Renderer::Renderer(std::string name, int w, int h) {
 
     std::cout << "Getting queue family...\n";
     std::vector<VkQueueFamilyProperties> queue_families = get_queue_families();
-    QueueInfo queue_info = get_queue_family_with_graphics_support(queue_families);
+    queue_info = get_queue_family_with_graphics_support(queue_families);
 
     std::cout << "Creating logical device...\n";
     device = create_logical_device(queue_info.queue_CI);
@@ -44,4 +44,7 @@ Renderer::Renderer(std::string name, int w, int h) {
 
     std::cout << "Creating sync objects (fences, semaphores)...\n";
     create_sync_objects();
+
+    std::cout << "Creating command buffers...\n";
+    create_command_buffers();
 }

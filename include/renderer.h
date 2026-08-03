@@ -95,6 +95,9 @@ private:
 
     // Sync objects
     void create_sync_objects();
+    
+    // Command pool and buffers
+    void create_command_buffers();
 
 private:
     VkInstance instance = VK_NULL_HANDLE;
@@ -104,6 +107,7 @@ private:
     PhysicalDevice physical_device;
 
     VkDevice device = VK_NULL_HANDLE;
+    QueueInfo queue_info;
     VkQueue graphics_queue = VK_NULL_HANDLE;
 
     SDL_Window* window = nullptr;
@@ -126,4 +130,7 @@ private:
     std::array<VkFence, max_frames_in_flight> fences;
     std::array<VkSemaphore, max_frames_in_flight> image_acquired_semaphores;
     std::vector<VkSemaphore> render_complete_semaphores;
+
+    VkCommandPool command_pool{ VK_NULL_HANDLE };
+    std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
 };
