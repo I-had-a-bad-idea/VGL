@@ -2,7 +2,7 @@ CXX=g++
 
 CXXFLAGS=-std=c++20 \
 -Iinclude \
--Iexternal \
+-isystem external \
 -IC:/VulkanSDK/1.4.357.0/include \
 -DVK_NO_PROTOTYPES 
 
