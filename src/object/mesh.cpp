@@ -20,3 +20,27 @@ Mesh::Mesh(std::string path) {
     }
     // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
 }
+
+
+void Object::load_mesh_into_buffer(VmaAllocator allocator) {
+    VkDeviceSize v_buffer_size {sizeof(Vertex) * mesh.vertices.size()};
+    VkDeviceSize i_buffer_size {sizeof(uint16_t) * mesh.indices.size()};
+
+    VkBufferCreateInfo buffer_CI {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = v_buffer_size + i_buffer_size, // since we combine both into one buffer
+        .usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT // tell GPU, that we are combining the buffers
+    };
+
+    VmaAllocationCreateInfo v_buffer_alloc_CI {
+        // make sure we get memory, that on the GPU (in VRAM) and accessible by host
+        .flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT,
+        .usage = VMA_MEMORY_USAGE_AUTO
+    };
+    VmaAllocationInfo v_buffer_alloc_info {};
+    vk_check(vmaCreateBuffer(allocator, &buffer_CI, &v_buffer_alloc_CI, &v_buffer, &v_buffer_allocation, &v_buffer_alloc_info));
+    
+    // copy data into buffer
+    memcpy(v_buffer_alloc_info.pMappedData, mesh.vertices.data(), v_buffer_size);
+    memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, mesh.indices.data(), i_buffer_size);
+}
