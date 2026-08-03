@@ -1,6 +1,6 @@
-#include "window.h"
+#include "renderer.h"
 
-SDL_Window* create_window(std::string name, int w, int h) {
+SDL_Window* Renderer::create_window(std::string name, int w, int h) {
     if (name.length() == 0) {
         name = "VulkanGraphicsLib"; // Name fallback
     }
@@ -19,7 +19,7 @@ SDL_Window* create_window(std::string name, int w, int h) {
 }
 
 
-WindowData create_vulkan_surface_for_window(VkInstance instance, SDL_Window* window) {
+Renderer::WindowData Renderer::create_vulkan_surface_for_window() {
     WindowData window_data;
 
     VkSurfaceKHR surface {VK_NULL_HANDLE};
@@ -31,14 +31,14 @@ WindowData create_vulkan_surface_for_window(VkInstance instance, SDL_Window* win
     return window_data;
 }
 
-VkSurfaceCapabilitiesKHR get_surface_properties(std::vector<VkPhysicalDevice> devices, uint32_t device_index, VkSurfaceKHR surface) {
+VkSurfaceCapabilitiesKHR Renderer::get_surface_properties() {
     VkSurfaceCapabilitiesKHR surface_caps{};
-    vk_check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(devices[device_index], surface, &surface_caps));
+    vk_check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_devices[device_index], window_data.surface, &surface_caps));
 
     return surface_caps;
 }
 
-VkSwapchainKHR create_swapchain(VkDevice device, WindowData window_data, VkSurfaceCapabilitiesKHR surface_caps) {
+VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps) {
     VkExtent2D swapchain_extent{ surface_caps.currentExtent };
     if (surface_caps.currentExtent.width == 0xFFFFFFFF) { // special value indicating, that the surace size will be determined by window size
         swapchain_extent = { .width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y) };
@@ -65,7 +65,7 @@ VkSwapchainKHR create_swapchain(VkDevice device, WindowData window_data, VkSurfa
     return swapchain;
 }
 
-SwapchainData get_swapchain_data(VkDevice device, VkSwapchainKHR swapchain, VkFormat image_format) {
+Renderer::SwapchainData Renderer::get_swapchain_data(VkSwapchainKHR swapchain, VkFormat image_format) {
     std::vector<VkImage> swapchain_images;
     std::vector<VkImageView> swapchain_image_views;
 

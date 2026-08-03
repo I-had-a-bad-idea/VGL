@@ -1,19 +1,17 @@
-#include "queues.h"
+#include "renderer.h"
 
 
-std::vector<VkQueueFamilyProperties> get_queue_families(std::vector<VkPhysicalDevice> devices, uint32_t device_index) {
+std::vector<VkQueueFamilyProperties> Renderer::get_queue_families() {
     uint32_t queue_family_count{ 0 };
-    vkGetPhysicalDeviceQueueFamilyProperties(devices[device_index], &queue_family_count, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(physical_devices[device_index], &queue_family_count, nullptr);
     std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
-    vkGetPhysicalDeviceQueueFamilyProperties(devices[device_index], &queue_family_count, queue_families.data()); // get all families
+    vkGetPhysicalDeviceQueueFamilyProperties(physical_devices[device_index], &queue_family_count, queue_families.data()); // get all families
 
     return queue_families;
 }
 
 
-QueueInfo get_queue_family_with_graphics_support(VkInstance instance, std::vector<VkPhysicalDevice> devices, uint32_t device_index,
-    std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support) {
-    
+Renderer::QueueInfo Renderer::get_queue_family_with_graphics_support(std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support) {
     uint32_t queue_family {0};
 
     for (size_t i = 0; i < queue_families.size(); i++) {
@@ -24,7 +22,7 @@ QueueInfo get_queue_family_with_graphics_support(VkInstance instance, std::vecto
     }
 
     if (check_presentation_support) {
-        vk_check(SDL_Vulkan_GetPresentationSupport(instance, devices[device_index], queue_family)); // check for presentation support
+        vk_check(SDL_Vulkan_GetPresentationSupport(instance, physical_devices[device_index], queue_family)); // check for presentation support
     }
 
     // Referebce the queue.

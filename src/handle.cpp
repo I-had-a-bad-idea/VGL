@@ -1,6 +1,6 @@
-#include "handle.h"
+#include "renderer.h"
 
-VkDevice create_logical_device(std::vector<VkPhysicalDevice> devices, uint32_t device_index, VkDeviceQueueCreateInfo queue_CI) {
+VkDevice Renderer::create_logical_device(VkDeviceQueueCreateInfo queue_CI) {
     const std::vector<const char*> device_extensions {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     VkPhysicalDeviceVulkan12Features enabled_vk_12_features{
@@ -33,13 +33,13 @@ VkDevice create_logical_device(std::vector<VkPhysicalDevice> devices, uint32_t d
         .pEnabledFeatures = &enabled_vk_10_features
     };
     VkDevice device;
-    vk_check(vkCreateDevice(devices[device_index], &device_CI, nullptr, &device));
+    vk_check(vkCreateDevice(physical_devices[device_index], &device_CI, nullptr, &device));
 
     return device;
 }
 
 
-VkQueue get_device_queue(VkDevice device, uint32_t queue_family) {
+VkQueue Renderer::get_device_queue(uint32_t queue_family) {
     VkQueue queue {VK_NULL_HANDLE};
     vkGetDeviceQueue(device, queue_family, 0, &queue);
 

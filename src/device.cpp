@@ -1,7 +1,7 @@
-#include "device.h"
+#include "renderer.h"
 
 
-std::vector<VkPhysicalDevice> get_devices(VkInstance instance) {
+std::vector<VkPhysicalDevice> Renderer::get_devices() {
     uint32_t device_count {0};
 
     vk_check(vkEnumeratePhysicalDevices(instance, &device_count, nullptr));
@@ -11,8 +11,8 @@ std::vector<VkPhysicalDevice> get_devices(VkInstance instance) {
     return devices;
 }
 
-PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t preferred_device_index) {
-    uint32_t device_count = devices.size();
+Renderer::PhysicalDevice  Renderer::select_device(uint32_t preferred_device_index) {
+    uint32_t device_count = physical_devices.size();
 
     uint32_t device_index {0};
     if (preferred_device_index != UINT32_MAX) {
@@ -22,7 +22,7 @@ PhysicalDevice select_device(std::vector<VkPhysicalDevice> devices, uint32_t pre
 
     // get device info
     VkPhysicalDeviceProperties2 device_properties {.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2};
-    vkGetPhysicalDeviceProperties2(devices[device_index], &device_properties);
+    vkGetPhysicalDeviceProperties2(physical_devices[device_index], &device_properties);
     std::cout << "Selected device: " << device_properties.properties.deviceName << "\n";
 
     return PhysicalDevice {.device_index = device_index, .device_properties = device_properties};

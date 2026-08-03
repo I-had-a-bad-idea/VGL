@@ -1,10 +1,10 @@
-#include "vulkan_graphics_lib.h"
+#include "renderer.h"
 
 #include <iostream>
 
 int main() {
     std::cout << "Starting...\n";
-    Renderer renderer = create_renderer("Test", 1280, 720);
+    Renderer renderer("Test", 1280, 720);
     
     // Wait 5s to see the window
     SDL_Delay(5000);

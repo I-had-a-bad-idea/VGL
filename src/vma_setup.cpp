@@ -1,6 +1,6 @@
-#include "vma_setup.h"
+#include "renderer.h"
 
-VmaAllocator setup_vma(VkInstance instance, std::vector<VkPhysicalDevice> devices, uint32_t device_index, VkDevice device) {
+VmaAllocator Renderer::setup_vma() {
     VmaVulkanFunctions vkFunctions{
         .vkGetInstanceProcAddr = vkGetInstanceProcAddr,
         .vkGetDeviceProcAddr = vkGetDeviceProcAddr,
@@ -8,7 +8,7 @@ VmaAllocator setup_vma(VkInstance instance, std::vector<VkPhysicalDevice> device
     };
     VmaAllocatorCreateInfo allocatorCI{
         .flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT, 
-        .physicalDevice = devices[device_index],
+        .physicalDevice = physical_devices[device_index],
         .device = device,
         .pVulkanFunctions = &vkFunctions,
         .instance = instance

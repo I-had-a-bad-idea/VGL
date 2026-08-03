@@ -1,6 +1,6 @@
-#include "instance.h"
+#include "renderer.h"
 
-VkInstance get_vulkan_instance(std::string app_name) {
+VkInstance Renderer::get_vulkan_instance(std::string app_name) {
     if (app_name.length() == 0) {
         app_name = "VulkanGraphicsLib"; // Name fallback
     }
