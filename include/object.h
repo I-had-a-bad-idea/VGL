@@ -38,22 +38,30 @@ class Texture {
     public:
         Texture(std::string filepath);
 
+    	VkImage image {VK_NULL_HANDLE};
+	    VkImageView view {VK_NULL_HANDLE};
+	    VkSampler sampler {VK_NULL_HANDLE};
+        uint32_t descriptor_index;
+
         void load_image_into_buffer(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
 
     private:
-    	VmaAllocation allocation{ VK_NULL_HANDLE };
-	    VkImage image{ VK_NULL_HANDLE };
-	    VkImageView view{ VK_NULL_HANDLE };
-	    VkSampler sampler{ VK_NULL_HANDLE };
+    	VmaAllocation allocation {VK_NULL_HANDLE};
         ktxTexture* ktx_texture {nullptr};
+};
+
+class Material {
+    public:
+        Texture* albedo;
+        Material(Texture* texture);
 };
 
 class Object {
     public:
-        Mesh mesh;
-        Texture texture;
+        Mesh* mesh;
+        Material* material;
+        glm::mat4 transform;
 
-        void load_into_buffers(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
-        Object(std::string path_to_mesh, std::string path_to_texture);
+        Object(Mesh* mesh, Material* material);
 
 };

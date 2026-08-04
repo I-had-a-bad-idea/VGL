@@ -24,7 +24,8 @@ public:
     static constexpr uint32_t max_frames_in_flight = 2;
     Renderer(std::string name, int w, int h);
 
-    void load_object(Object object);
+    void load_mesh(Mesh mesh);
+    void load_texture(Texture texture);
 
 private:
     struct ShaderData {
@@ -135,4 +136,8 @@ private:
 
     VkCommandPool command_pool {VK_NULL_HANDLE};
     std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
+
+    VkDescriptorSet texture_descriptor_set;
 };
+
+

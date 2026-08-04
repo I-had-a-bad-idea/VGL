@@ -51,6 +51,10 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
-void Renderer::load_object(Object object) {
-    object.load_into_buffers(device, command_pool, graphics_queue, allocator);
+void Renderer::load_mesh(Mesh mesh) {
+    mesh.load_mesh_into_buffer(allocator);
+}
+
+void Renderer::load_texture(Texture texture) {
+    texture.load_image_into_buffer(device, command_pool, graphics_queue, allocator);
 }

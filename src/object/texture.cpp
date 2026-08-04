@@ -133,4 +133,19 @@ void Texture::load_image_into_buffer(VkDevice device, VkCommandPool command_pool
     // Submit command buffer to the graphics queue to execute the commands.
     vk_check(vkQueueSubmit2(graphics_queue, 1, &onetime_SI, fence_onetime));
     vk_check(vkWaitForFences(device, 1, &fence_onetime, VK_TRUE, UINT64_MAX));
+
+
+    VkSamplerCreateInfo sampler_CI {
+        .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+        .magFilter = VK_FILTER_LINEAR,
+        .minFilter = VK_FILTER_LINEAR,
+        .mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+        .anisotropyEnable = VK_TRUE, // enable anisotropic filter to reduce blur and aliasing
+        .maxAnisotropy = 8.0f, // 8 is a widely supported value for max anisotropy
+        .maxLod = (float)ktx_texture->numLevels
+    };
+    vk_check(vkCreateSampler(device, &sampler_CI, nullptr, &sampler));
+
+    ktxTexture_Destroy(ktx_texture);
+    
 }
