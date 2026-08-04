@@ -7,7 +7,8 @@ int main() {
     std::cout << "Starting...\n";
     Renderer renderer("Test", 1280, 720);
     
-    Mesh monkey("assets/monkey.obj");
+    Object monkey("assets/monkey.obj", "assets/Textures/Gravel.ktx");
+    renderer.load_object(monkey);
 
     // Wait 5s to see the window
     SDL_Delay(5000);

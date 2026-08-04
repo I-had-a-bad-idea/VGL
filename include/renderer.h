@@ -17,11 +17,14 @@
 #include "vk_check.hpp"
 #include "sdl.hpp"
 #include "volk.hpp"
+#include "object.h"
 
 class Renderer {
 public:
     static constexpr uint32_t max_frames_in_flight = 2;
     Renderer(std::string name, int w, int h);
+
+    void load_object(Object object);
 
 private:
     struct ShaderData {

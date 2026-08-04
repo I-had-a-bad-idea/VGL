@@ -47,4 +47,10 @@ Renderer::Renderer(std::string name, int w, int h) {
 
     std::cout << "Creating command buffers...\n";
     create_command_buffers();
+
+    std::cout << "Render setup completed!" << std::endl;
+}
+
+void Renderer::load_object(Object object) {
+    object.load_into_buffers(allocator);
 }

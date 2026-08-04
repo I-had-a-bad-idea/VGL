@@ -50,7 +50,7 @@ test: $(CPP_OBJECTS) $(KTX_OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(CPP_OBJECTS) $(KTX_OBJECTS) test
+	del /Q $(subst /,\,$(CPP_OBJECTS)) $(subst /,\,$(KTX_OBJECTS)) test.exe 2>nul || exit 0
 
 compile-and-run-test: test
 	./test
