@@ -52,5 +52,5 @@ Renderer::Renderer(std::string name, int w, int h) {
 }
 
 void Renderer::load_object(Object object) {
-    object.load_into_buffers(allocator);
+    object.load_into_buffers(device, command_pool, graphics_queue, allocator);
 }

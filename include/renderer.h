@@ -133,6 +133,6 @@ private:
     std::array<VkSemaphore, max_frames_in_flight> image_acquired_semaphores;
     std::vector<VkSemaphore> render_complete_semaphores;
 
-    VkCommandPool command_pool{ VK_NULL_HANDLE };
+    VkCommandPool command_pool {VK_NULL_HANDLE};
     std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
 };

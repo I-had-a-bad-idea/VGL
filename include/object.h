@@ -38,7 +38,7 @@ class Texture {
     public:
         Texture(std::string filepath);
 
-        void load_image_into_buffer(VmaAllocator allocator);
+        void load_image_into_buffer(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
 
     private:
     	VmaAllocation allocation{ VK_NULL_HANDLE };
@@ -53,7 +53,7 @@ class Object {
         Mesh mesh;
         Texture texture;
 
-        void load_into_buffers(VmaAllocator allocator);
+        void load_into_buffers(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
         Object(std::string path_to_mesh, std::string path_to_texture);
 
 };
