@@ -22,6 +22,7 @@
 class Renderer {
 public:
     static constexpr uint32_t max_frames_in_flight = 2;
+    static constexpr uint32_t max_textures = 4096;
     Renderer(std::string name, int w, int h);
 
     void load_mesh(Mesh mesh);
@@ -103,6 +104,10 @@ private:
     // Command pool and buffers
     void create_command_buffers();
 
+    // Texture descriptors
+    void create_texture_descriptors();
+    void update_texture_descriptor(uint32_t index, Texture& texture);
+
 private:
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -137,7 +142,12 @@ private:
     VkCommandPool command_pool {VK_NULL_HANDLE};
     std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
 
-    VkDescriptorSet texture_descriptor_set;
+    // std::vector<Texture> textures;
+    // std::vector<uint32_t> free_texture_slots;
+
+    VkDescriptorPool descriptor_pool {VK_NULL_HANDLE};
+    VkDescriptorSetLayout descriptor_set_layout_tex {VK_NULL_HANDLE};
+    VkDescriptorSet descriptor_set_tex {VK_NULL_HANDLE};
 };
 
 
