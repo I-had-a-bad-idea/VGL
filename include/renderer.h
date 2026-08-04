@@ -142,7 +142,7 @@ private:
     VkCommandPool command_pool {VK_NULL_HANDLE};
     std::array<VkCommandBuffer, max_frames_in_flight> command_buffers;
 
-    // std::vector<Texture> textures;
+    std::vector<Texture> textures;
     // std::vector<uint32_t> free_texture_slots;
 
     VkDescriptorPool descriptor_pool {VK_NULL_HANDLE};

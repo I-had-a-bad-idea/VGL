@@ -48,6 +48,9 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Creating command buffers...\n";
     create_command_buffers();
 
+    std::cout << "Creating texture descriptors...\n";
+    create_texture_descriptors();
+
     std::cout << "Render setup completed!" << std::endl;
 }
 
@@ -57,4 +60,12 @@ void Renderer::load_mesh(Mesh mesh) {
 
 void Renderer::load_texture(Texture texture) {
     texture.load_image_into_buffer(device, command_pool, graphics_queue, allocator);
+
+    uint32_t id = textures.size();
+
+    textures.push_back(texture);
+
+    update_texture_descriptor(id, textures[id]);
+
+    texture.descriptor_index  = id;
 }

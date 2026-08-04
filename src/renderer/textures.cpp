@@ -53,3 +53,22 @@ void Renderer::create_texture_descriptors() {
 
 }
 
+void Renderer::update_texture_descriptor(uint32_t index, Texture& texture) {
+    VkDescriptorImageInfo image_info {
+        .sampler = texture.sampler,
+        .imageView = texture.view,
+        .imageLayout = VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL
+    };
+
+    VkWriteDescriptorSet write_desc_set {
+        .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet = descriptor_set_tex,
+        .dstBinding = 0,
+        .dstArrayElement = index, // modify only this texture slot
+        .descriptorCount = 1,
+        .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        .pImageInfo = &image_info
+    };
+
+    vkUpdateDescriptorSets(device, 1, &write_desc_set, 0, nullptr);
+}
