@@ -57,18 +57,20 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
-void Renderer::load_mesh(Mesh mesh) {
+Mesh Renderer::load_mesh(std::string filepath) {
+    Mesh mesh(filepath);
     mesh.load_mesh_into_buffer(allocator);
+    return mesh;
 }
 
-void Renderer::load_texture(Texture texture) {
+Texture Renderer::load_texture(std::string filepath) {
+    Texture texture(filepath);
     texture.load_image_into_buffer(device, command_pool, graphics_queue, allocator);
 
     uint32_t id = textures.size();
-
     textures.push_back(texture);
-
     update_texture_descriptor(id, textures[id]);
-
     texture.descriptor_index  = id;
+
+    return texture;
 }

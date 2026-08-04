@@ -27,8 +27,8 @@ public:
     static constexpr uint32_t max_textures = 4096;
     Renderer(std::string name, int w, int h);
 
-    void load_mesh(Mesh mesh);
-    void load_texture(Texture texture);
+    Mesh load_mesh(std::string filepath);
+    Texture load_texture(std::string filepath);
 
 private:
     struct ShaderData {

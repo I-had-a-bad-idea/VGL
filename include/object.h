@@ -50,9 +50,15 @@ class Texture {
         ktxTexture* ktx_texture {nullptr};
 };
 
+class Shader {
+    public:
+        Shader(std::string filepath);
+};
+
 class Material {
     public:
         Texture* albedo;
+        Shader* shader;
         Material(Texture* texture);
 };
 

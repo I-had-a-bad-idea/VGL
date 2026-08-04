@@ -20,7 +20,8 @@ CXXFLAGS = \
 LDFLAGS = \
 -L$(VULKAN_SDK)/Lib \
 -lvulkan-1 \
--lSDL3
+-lSDL3 \
+-lslang
 
 CPP_SOURCES := \
 $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp) \
