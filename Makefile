@@ -1,21 +1,58 @@
-CXX=g++
+CC = gcc
+CXX = g++
 
-CXXFLAGS=-std=c++20 \
+VULKAN_SDK = C:/VulkanSDK/1.4.357.0
+
+CFLAGS = \
+-Iexternal/ktx/include \
+-Iexternal/ktx/other_include \
+-I$(VULKAN_SDK)/Include
+
+CXXFLAGS = \
+-std=c++20 \
 -Iinclude \
 -isystem external \
--IC:/VulkanSDK/1.4.357.0/include \
--DVK_NO_PROTOTYPES 
+-isystem external/ktx/include \
+-isystem external/ktx/other_include \
+-I$(VULKAN_SDK)/Include \
+-DVK_NO_PROTOTYPES
 
-LDFLAGS= \
--LC:/VulkanSDK/1.4.357.0/Lib \
+LDFLAGS = \
+-L$(VULKAN_SDK)/Lib \
 -lvulkan-1 \
 -lSDL3
 
-SOURCES := $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp) test.cpp
+CPP_SOURCES := \
+$(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp) \
+test.cpp
 
-test: ${SOURCES}
-	$(CXX) $(CXXFLAGS) ${SOURCES} $(LDFLAGS) -o test
+KTX_SOURCES := \
+external/ktx/lib/texture.c \
+external/ktx/lib/hashlist.c \
+external/ktx/lib/checkheader.c \
+external/ktx/lib/swap.c \
+external/ktx/lib/memstream.c \
+external/ktx/lib/filestream.c \
+external/ktx/lib/vkloader.c
 
+CPP_OBJECTS := $(CPP_SOURCES:.cpp=.o)
+KTX_OBJECTS := $(KTX_SOURCES:.c=.o)
+
+all: test
+
+test: $(CPP_OBJECTS) $(KTX_OBJECTS)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(CPP_OBJECTS) $(KTX_OBJECTS) test
 
 compile-and-run-test: test
 	./test
+
+.PHONY: all clean compile-and-run-test
