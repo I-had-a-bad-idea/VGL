@@ -22,9 +22,9 @@ Mesh::Mesh(std::string path) {
 }
 
 
-void Object::load_mesh_into_buffer(VmaAllocator allocator) {
-    VkDeviceSize v_buffer_size {sizeof(Vertex) * mesh.vertices.size()};
-    VkDeviceSize i_buffer_size {sizeof(uint16_t) * mesh.indices.size()};
+void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
+    VkDeviceSize v_buffer_size {sizeof(Vertex) * vertices.size()};
+    VkDeviceSize i_buffer_size {sizeof(uint16_t) * indices.size()};
 
     VkBufferCreateInfo buffer_CI {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
@@ -41,6 +41,6 @@ void Object::load_mesh_into_buffer(VmaAllocator allocator) {
     vk_check(vmaCreateBuffer(allocator, &buffer_CI, &v_buffer_alloc_CI, &v_buffer, &v_buffer_allocation, &v_buffer_alloc_info));
     
     // copy data into buffer
-    memcpy(v_buffer_alloc_info.pMappedData, mesh.vertices.data(), v_buffer_size);
-    memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, mesh.indices.data(), i_buffer_size);
+    memcpy(v_buffer_alloc_info.pMappedData, vertices.data(), v_buffer_size);
+    memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, indices.data(), i_buffer_size);
 }
