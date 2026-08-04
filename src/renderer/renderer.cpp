@@ -51,6 +51,9 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Creating texture descriptors...\n";
     create_texture_descriptors();
 
+    std::cout << "Setting up Slang...\n";
+    create_slang_session();
+
     std::cout << "Render setup completed!" << std::endl;
 }
 

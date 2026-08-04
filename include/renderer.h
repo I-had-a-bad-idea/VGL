@@ -7,6 +7,8 @@
 #include <vma/vk_mem_alloc.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#include <slang/slang.h>
+#include <slang/slang-com-ptr.h>
 
 #include <string>
 #include <vector>
@@ -108,6 +110,9 @@ private:
     void create_texture_descriptors();
     void update_texture_descriptor(uint32_t index, Texture& texture);
 
+    // Shaders
+    void create_slang_session();
+
 private:
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -148,6 +153,9 @@ private:
     VkDescriptorPool descriptor_pool {VK_NULL_HANDLE};
     VkDescriptorSetLayout descriptor_set_layout_tex {VK_NULL_HANDLE};
     VkDescriptorSet descriptor_set_tex {VK_NULL_HANDLE};
+
+    Slang::ComPtr<slang::IGlobalSession> slang_global_session;
+    Slang::ComPtr<slang::ISession> slang_session;
 };
 
 

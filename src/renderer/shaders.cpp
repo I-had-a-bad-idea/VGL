@@ -25,3 +25,28 @@ void Renderer::create_shader_buffers() {
 
     }
 }
+
+void Renderer::create_slang_session() {
+    // INit Slang shader compiler
+    slang::createGlobalSession(slang_global_session.writeRef());
+
+    auto slang_targets {std::to_array<slang::TargetDesc>({ {
+        .format {SLANG_SPIRV},
+        .profile {slang_global_session->findProfile("spirv_1_4")}
+    } })};
+
+    auto slang_options {std::to_array<slang::CompilerOptionEntry>({ {
+        slang::CompilerOptionName::EmitSpirvDirectly,
+        {slang::CompilerOptionValueKind::Int, 1}
+    } })};
+
+    slang::SessionDesc slang_session_desc {
+        .targets {slang_targets.data()},
+        .targetCount {SlangInt(slang_targets.size())},
+        .defaultMatrixLayoutMode = SLANG_MATRIX_LAYOUT_COLUMN_MAJOR,
+        .compilerOptionEntries {slang_options.data()},
+        .compilerOptionEntryCount {uint32_t(slang_options.size())}
+    };
+
+    slang_global_session->createSession(slang_session_desc, slang_session.writeRef());
+}
