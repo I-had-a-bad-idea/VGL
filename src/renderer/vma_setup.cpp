@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-VmaAllocator Renderer::setup_vma() {
+void Renderer::setup_vma() {
     VmaVulkanFunctions vkFunctions{
         .vkGetInstanceProcAddr = vkGetInstanceProcAddr,
         .vkGetDeviceProcAddr = vkGetDeviceProcAddr,
@@ -14,7 +14,5 @@ VmaAllocator Renderer::setup_vma() {
         .instance = instance
     };
 
-    VmaAllocator allocator {VK_NULL_HANDLE};
     vk_check(vmaCreateAllocator(&allocatorCI, &allocator));
-    return allocator;
 }

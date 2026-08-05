@@ -9,7 +9,6 @@ void Renderer::create_texture_descriptors() {
         .pBindingFlags = &desc_variable_flag
     };
     VkDescriptorSetLayoutBinding desc_layout_binding_text {
-        .binding = 0, // TODO: might have to be removed
         .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
         .descriptorCount = max_textures,
         .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT

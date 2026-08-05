@@ -29,14 +29,15 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Getting queue families...\n";
     std::vector<VkQueueFamilyProperties> queue_families = get_queue_families();
     std::cout << "Getting queue family with graphics support...\n";
-    queue_info = get_queue_family_with_graphics_support(queue_families);
+    get_queue_family_with_graphics_support(queue_families);
 
     std::cout << "Creating logical device...\n";
-    device = create_logical_device(queue_info.queue_CI);
+    create_logical_device();
+    std::cout << "Getting device queue...\n";
     graphics_queue = get_device_queue(queue_info.queue_family);
 
     std::cout << "Setting up VMA...\n";
-    allocator = setup_vma();
+    setup_vma();
 
     std::cout << "Creating window...\n";
     window = create_window(name, w, h);

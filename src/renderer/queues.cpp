@@ -11,7 +11,7 @@ std::vector<VkQueueFamilyProperties> Renderer::get_queue_families() {
 }
 
 
-Renderer::QueueInfo Renderer::get_queue_family_with_graphics_support(std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support) {
+void Renderer::get_queue_family_with_graphics_support(std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support) {
     uint32_t queue_family {0};
 
     for (size_t i = 0; i < queue_families.size(); i++) {
@@ -34,5 +34,5 @@ Renderer::QueueInfo Renderer::get_queue_family_with_graphics_support(std::vector
         .pQueuePriorities = &qf_priorities
     };
 
-    return QueueInfo {.queue_family = queue_family, .queue_CI = queue_CI};
+    queue_info = QueueInfo {.queue_family = queue_family, .queue_CI = queue_CI};
 }

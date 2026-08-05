@@ -110,10 +110,10 @@ private:
 
     // Queues
     std::vector<VkQueueFamilyProperties> get_queue_families();
-    QueueInfo get_queue_family_with_graphics_support(std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support = true);
+    void get_queue_family_with_graphics_support(std::vector<VkQueueFamilyProperties> queue_families, bool check_presentation_support = true);
 
     // Logical device
-    VkDevice create_logical_device(VkDeviceQueueCreateInfo queue_CI);
+    void create_logical_device();
     VkQueue get_device_queue(uint32_t queue_family);
 
     // Window / Surface
@@ -128,7 +128,7 @@ private:
     void create_depth_image_and_depth_image_view();
 
     // Memory
-    VmaAllocator setup_vma();
+    void setup_vma();
 
     // Shaders
     void create_shader_buffers();
