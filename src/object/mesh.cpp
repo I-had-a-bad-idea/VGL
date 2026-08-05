@@ -7,7 +7,7 @@ Mesh::Mesh(std::string path) {
 
     vk_check(tinyobj::LoadObj(&attrib, &shapes, &materials, nullptr, nullptr, path.c_str())); // load file
 
-    index_count = VKDeviceSize {shapes[0].mesh.indices.size()};
+    index_count = VkDeviceSize {shapes[0].mesh.indices.size()};
     //load vertex and index data
     for (auto& index : shapes[0].mesh.indices) {
         Vertex v{
@@ -43,4 +43,8 @@ void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
     // copy data into buffer
     memcpy(v_buffer_alloc_info.pMappedData, vertices.data(), v_buffer_size);
     memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, indices.data(), i_buffer_size);
+}
+
+void Mesh::destroy(VmaAllocator allocator) {
+    vmaDestroyBuffer(allocator, v_buffer, v_buffer_allocation);
 }

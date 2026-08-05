@@ -47,6 +47,12 @@ public:
 
     void render_scene(Scene scene);
 
+    void destroy_mesh(Mesh mesh);
+    void destroy_texture(Texture texture);
+    void destroy_shader(Shader shader);
+
+    void destroy();
+
 private:
 
     struct GlobalData {

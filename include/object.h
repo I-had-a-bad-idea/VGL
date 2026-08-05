@@ -30,9 +30,11 @@ class Mesh {
 
         VkBuffer v_buffer {VK_NULL_HANDLE};
         VkDeviceSize v_buffer_size;
-        const VkDeviceSize index_count;
+        VkDeviceSize index_count;
 
         void load_mesh_into_buffer(VmaAllocator allocator);
+
+        void destroy(VmaAllocator allocator);
 
     private:
         std::vector<Vertex> vertices {};
@@ -53,6 +55,8 @@ class Texture {
 
         void load_image_into_buffer(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
 
+        void destroy(VkDevice device, VmaAllocator allocator);
+
     private:
     	VmaAllocation allocation {VK_NULL_HANDLE};
         ktxTexture* ktx_texture {nullptr};
@@ -68,7 +72,9 @@ class Shader {
         GraphicsPipeline graphics_pipeline;
         VkShaderModule shader_module {};
 
-        Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISession> slang_session);        
+        Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISession> slang_session);     
+        
+        void destroy(VkDevice device);
     
 };
 

@@ -149,3 +149,10 @@ void Texture::load_image_into_buffer(VkDevice device, VkCommandPool command_pool
     ktxTexture_Destroy(ktx_texture);
     
 }
+
+
+void Texture::destroy(VkDevice device, VmaAllocator allocator) {
+    vkDestroyImageView(device, view, nullptr);
+    vkDestroySampler(device, sampler, nullptr);
+    vmaDestroyImage(allocator, image, allocation);
+}

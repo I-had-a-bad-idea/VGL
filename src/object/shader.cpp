@@ -16,3 +16,9 @@ Shader::Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISess
 
     vk_check(vkCreateShaderModule(device, &shader_module_CI, nullptr, &shader_module));
 }
+
+void Shader::destroy(VkDevice device) {
+    vkDestroyPipelineLayout(device, graphics_pipeline.layout, nullptr);
+	vkDestroyPipeline(device, graphics_pipeline.pipeline, nullptr);
+	vkDestroyShaderModule(device, shader_module, nullptr);
+}

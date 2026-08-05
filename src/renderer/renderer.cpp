@@ -294,3 +294,47 @@ Shader Renderer::load_shader(std::string filepath) {
 
     return shader;
 }
+
+void Renderer::destroy_mesh(Mesh mesh) {
+    mesh.destroy(allocator);
+}
+void Renderer::destroy_texture(Texture texture) {
+    texture.destroy(device, allocator);
+}
+void Renderer::destroy_shader(Shader shader) {
+    shader.destroy(device);
+}
+
+
+void Renderer::destroy() {
+	vk_check(vkDeviceWaitIdle(device)); // make sure none of the GPU resources we want to destroy are still in use
+
+	for (auto i = 0; i < max_frames_in_flight; i++) {
+		vkDestroyFence(device, fences[i], nullptr);
+		vkDestroySemaphore(device, image_acquired_semaphores[i], nullptr);
+		vmaDestroyBuffer(allocator, shader_data_buffers[i].buffer, shader_data_buffers[i].allocation);
+	}
+	for (auto i = 0; i < render_complete_semaphores.size(); i++) {
+		vkDestroySemaphore(device, render_complete_semaphores[i], nullptr);
+	}
+
+	vmaDestroyImage(allocator, depth_image, depth_image_allocation);
+	vkDestroyImageView(device, depth_image_view, nullptr);
+	for (auto i = 0; i < swapchain_data.swapchain_image_views.size(); i++) {
+		vkDestroyImageView(device, swapchain_data.swapchain_image_views[i], nullptr);
+	}
+
+	vkDestroyDescriptorSetLayout(device, descriptor_set_layout_tex, nullptr);
+	vkDestroyDescriptorPool(device, descriptor_pool, nullptr);
+	vkDestroySwapchainKHR(device, swapchain, nullptr);
+	vkDestroySurfaceKHR(instance, window_data.surface, nullptr);
+	vkDestroyCommandPool(device, command_pool, nullptr);
+
+	vmaDestroyAllocator(allocator);
+	SDL_DestroyWindow(window);
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_Quit();
+
+	vkDestroyDevice(device, nullptr);
+	vkDestroyInstance(instance, nullptr);
+}

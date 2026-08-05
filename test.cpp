@@ -26,6 +26,13 @@ int main() {
     //     renderer.render_scene(scene); // Render the scene
     // }
 
+    // Destroy resources
+    renderer.destroy_mesh(monkey_mesh);
+    renderer.destroy_texture(gravel_texture);
+    renderer.destroy_shader(shader);
+
+    renderer.destroy();
+
     // Wait 5s to see the window
     SDL_Delay(5000);
 
