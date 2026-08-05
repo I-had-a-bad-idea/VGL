@@ -254,6 +254,16 @@ void Renderer::render_scene(Scene scene) {
     vk_check(vkQueueSubmit2(graphics_queue, 1, &submit_info, fences[frame_index])); // submit command buffer
 
     frame_index = (frame_index + 1) % max_frames_in_flight; // set frame_index for next render loop iteration
+
+    // Present image (enque image for presentation and wait for render complete semaphore [wait for rendering to finish])
+    VkPresentInfoKHR present_info {
+        .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+        .waitSemaphoreCount = 1,
+        .pWaitSemaphores = &render_complete_semaphores[image_index],
+        .swapchainCount = 1,
+        .pSwapchains = &swapchain,
+        .pImageIndices = &image_index
+    };
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {
