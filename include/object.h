@@ -28,6 +28,10 @@ class Mesh {
     public:
         Mesh(std::string filepath);
 
+        VkBuffer v_buffer {VK_NULL_HANDLE};
+        VkDeviceSize v_buffer_size;
+        const VkDeviceSize index_count;
+
         void load_mesh_into_buffer(VmaAllocator allocator);
 
     private:
@@ -35,7 +39,7 @@ class Mesh {
         std::vector<uint16_t> indices {};
 
         VmaAllocation v_buffer_allocation{ VK_NULL_HANDLE };
-        VkBuffer v_buffer{ VK_NULL_HANDLE };
+        
 };
 
 class Texture {

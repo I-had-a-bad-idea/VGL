@@ -186,13 +186,45 @@ void Renderer::render_scene(Scene scene) {
     // For each shader do the pipeline
     auto shader_to_objects = group_objects_by_shader(scene.objects);
     for (const auto& [shader, objects] : shader_to_objects) {
-
-        // bind resources (graphics pipeline, descriptor set, vertext/index buffers)
+        // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
         VkDeviceSize v_offset {0};
         vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.layout, 0, 1, &descriptor_set_tex, 0, nullptr);
         
+        for (const Object& obj : objects) {
+            // bind vertext/index buffers
+            vkCmdBindVertexBuffers(cb, 0, 1, &obj.mesh->v_buffer, &v_offset);
+            vkCmdBindIndexBuffer(cb, obj.mesh->v_buffer, obj.mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
+
+            vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(VkDeviceAddress), &shader_data_buffers[frame_index].deviceAddress);
+            // Finally actually draw
+            vkCmdDrawIndexed(cb, obj.mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
+        }
     }
+    vkCmdEndRendering(cb);
+
+    // transition swapchain image to a layout for presentation
+    VkImageMemoryBarrier2 barrier_present {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+        .srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+        .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+        .dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+        .dstAccessMask = 0,
+        .oldLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+        .newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+        .image = swapchain_data.swapchain_images[image_index],
+        .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1}
+    };
+    VkDependencyInfo barrier_present_dependency_info {
+        .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
+        .imageMemoryBarrierCount = 1,
+        .pImageMemoryBarriers = &barrier_present
+    };
+    vkCmdPipelineBarrier2(cb, &barrier_present_dependency_info);
+
+    // we dont need a barrier for the depth image, as we dont use that outside of this render pass
+
+    vkEndCommandBuffer(cb); // end comamnd buffer
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {

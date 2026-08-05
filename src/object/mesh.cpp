@@ -7,13 +7,13 @@ Mesh::Mesh(std::string path) {
 
     vk_check(tinyobj::LoadObj(&attrib, &shapes, &materials, nullptr, nullptr, path.c_str())); // load file
 
-    const VkDeviceSize index_count {shapes[0].mesh.indices.size()};
+    index_count = VKDeviceSize {shapes[0].mesh.indices.size()};
     //load vertex and index data
     for (auto& index : shapes[0].mesh.indices) {
         Vertex v{
-            .pos = { attrib.vertices[index.vertex_index * 3], -attrib.vertices[index.vertex_index * 3 + 1], attrib.vertices[index.vertex_index * 3 + 2] },
-            .normal = { attrib.normals[index.normal_index * 3], -attrib.normals[index.normal_index * 3 + 1], attrib.normals[index.normal_index * 3 + 2] },
-            .uv = { attrib.texcoords[index.texcoord_index * 2], 1.0 - attrib.texcoords[index.texcoord_index * 2 + 1] }
+            .pos = {attrib.vertices[index.vertex_index * 3], -attrib.vertices[index.vertex_index * 3 + 1], attrib.vertices[index.vertex_index * 3 + 2]},
+            .normal = {attrib.normals[index.normal_index * 3], -attrib.normals[index.normal_index * 3 + 1], attrib.normals[index.normal_index * 3 + 2]},
+            .uv = {attrib.texcoords[index.texcoord_index * 2], 1.0 - attrib.texcoords[index.texcoord_index * 2 + 1]}
         };
         vertices.push_back(v);
         indices.push_back(indices.size());
@@ -23,7 +23,7 @@ Mesh::Mesh(std::string path) {
 
 
 void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
-    VkDeviceSize v_buffer_size {sizeof(Vertex) * vertices.size()};
+    v_buffer_size = VkDeviceSize {sizeof(Vertex) * vertices.size()};
     VkDeviceSize i_buffer_size {sizeof(uint16_t) * indices.size()};
 
     VkBufferCreateInfo buffer_CI {
