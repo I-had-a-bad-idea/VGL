@@ -26,6 +26,9 @@ int main() {
     //     renderer.render_scene(scene); // Render the scene
     // }
 
+    // Wait 5s to see the window
+    SDL_Delay(5000);
+
     // Destroy resources
     renderer.destroy_mesh(monkey_mesh);
     renderer.destroy_texture(gravel_texture);
@@ -33,8 +36,7 @@ int main() {
 
     renderer.destroy();
 
-    // Wait 5s to see the window
-    SDL_Delay(5000);
+
 
     std::cout << "Ending...\n";
     return 0;

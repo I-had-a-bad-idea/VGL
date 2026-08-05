@@ -4,6 +4,8 @@
 std::vector<VkPhysicalDevice> Renderer::get_devices() {
     uint32_t device_count {0};
 
+    // std::cout << "Instance: " << instance << std::endl;
+
     vk_check(vkEnumeratePhysicalDevices(instance, &device_count, nullptr));
     std::vector<VkPhysicalDevice> devices(device_count);
     vk_check(vkEnumeratePhysicalDevices(instance, &device_count, devices.data())); // get devices
@@ -14,7 +16,6 @@ std::vector<VkPhysicalDevice> Renderer::get_devices() {
 Renderer::PhysicalDevice  Renderer::select_device(uint32_t preferred_device_index) {
     uint32_t device_count = physical_devices.size();
 
-    uint32_t device_index {0};
     if (preferred_device_index != UINT32_MAX) {
         device_index = preferred_device_index;
         assert(device_index < device_count);

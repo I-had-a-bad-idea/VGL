@@ -26,8 +26,9 @@ Renderer::Renderer(std::string name, int w, int h) {
     physical_devices = get_devices();
     physical_device = select_device();
 
-    std::cout << "Getting queue family...\n";
+    std::cout << "Getting queue families...\n";
     std::vector<VkQueueFamilyProperties> queue_families = get_queue_families();
+    std::cout << "Getting queue family with graphics support...\n";
     queue_info = get_queue_family_with_graphics_support(queue_families);
 
     std::cout << "Creating logical device...\n";

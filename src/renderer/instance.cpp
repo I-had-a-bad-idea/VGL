@@ -32,6 +32,7 @@ VkInstance Renderer::get_vulkan_instance(std::string app_name) {
     // Create instance
     VkInstance instance {VK_NULL_HANDLE};
     VkResult result = vkCreateInstance(&instance_CI, nullptr, &instance);
+    // std::cout << "vkCreateInstance returned " << result << std::endl;
     vk_check(result);
 
     return instance;
