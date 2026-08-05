@@ -68,6 +68,17 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
+std::unordered_map<Shader*, std::vector<Object>> group_objects_by_shader(const std::vector<Object>& objects) {
+    std::vector<Object> grouped_objects;
+    std::unordered_map<Shader*, std::vector<Object>> shader_to_objects;
+
+    // Group objects by their shader
+    for (const auto& obj : objects) {
+        shader_to_objects[obj.material->shader].push_back(obj);
+    }
+    return shader_to_objects;
+}
+
 void Renderer::render_scene(Scene scene) {
     // Wait for fence
     vk_check(vkWaitForFences(device, 1, &fences[frame_index], true, UINT64_MAX));
@@ -89,6 +100,99 @@ void Renderer::render_scene(Scene scene) {
     }
 
     memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
+
+    // Command buffer
+    auto cb = command_buffers[frame_index];
+    vk_check(vkResetCommandBuffer(cb, 0));
+
+    VkCommandBufferBeginInfo cb_BI {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+    };
+    vk_check(vkBeginCommandBuffer(cb, &cb_BI));
+
+    // Issue layout transitions for swapchain and depth images
+    std::array<VkImageMemoryBarrier2, 2> output_barriers {
+        VkImageMemoryBarrier2 {
+            .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+            .srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .srcAccessMask = 0,
+            .dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+            .newLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+            .image = swapchain_data.swapchain_images[image_index],
+            .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1}
+        },
+        VkImageMemoryBarrier2 {
+            .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+            .srcStageMask = VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT,
+            .srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+            .dstStageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT,
+            .dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+            .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+            .newLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+            .image = depth_image,
+            .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, .levelCount = 1, .layerCount = 1}
+        }
+            };
+    VkDependencyInfo barrier_dependency_info {
+        .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
+        .imageMemoryBarrierCount = 2,
+        .pImageMemoryBarriers = output_barriers.data()
+    };
+    vkCmdPipelineBarrier2(cb, &barrier_dependency_info);
+
+    // Define how we will use attachments
+    VkRenderingAttachmentInfo color_attachment_info {
+        .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
+        .imageView = swapchain_data.swapchain_image_views[image_index],
+        .imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+        .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+        .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+        .clearValue {.color{0.0f, 0.0f, 0.2f, 1.0f}}
+    };
+    VkRenderingAttachmentInfo depth_attachment_info {
+        .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
+        .imageView = depth_image_view,
+        .imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+        .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+        .storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+        .clearValue = {.depthStencil = {1.0f,  0}}
+    };
+    
+    // Begin dynamic render pass
+    VkRenderingInfo rendering_info {
+        .sType = VK_STRUCTURE_TYPE_RENDERING_INFO,
+        .renderArea {.extent{.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y)}},
+        .layerCount = 1,
+        .colorAttachmentCount = 1,
+        .pColorAttachments = &color_attachment_info,
+        .pDepthAttachment = &depth_attachment_info
+    };
+    vkCmdBeginRendering(cb, &rendering_info);
+
+    VkViewport vp {
+        .width = static_cast<uint32_t>(window_data.x),
+        .height = static_cast<uint32_t>(window_data.y),
+        .minDepth = 0.0f,
+        .maxDepth = 1.0f
+    };
+
+    vkCmdSetViewport(cb, 0, 1, &vp);
+    VkRect2D scissor {.extent{.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y)}};
+    vkCmdSetScissor(cb, 0, 1, &scissor);
+
+    // For each shader do the pipeline
+    auto shader_to_objects = group_objects_by_shader(scene.objects);
+    for (const auto& [shader, objects] : shader_to_objects) {
+
+        // bind resources (graphics pipeline, descriptor set, vertext/index buffers)
+        vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
+        VkDeviceSize v_offset {0};
+        vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.layout, 0, 1, &descriptor_set_tex, 0, nullptr);
+        
+    }
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {
