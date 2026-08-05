@@ -59,6 +59,9 @@ class Shader {
     
     private:
         VkShaderModule shader_module {};
+
+        VkPipeline pipeline;
+        VkPipelineLayout layout;
     
 };
 

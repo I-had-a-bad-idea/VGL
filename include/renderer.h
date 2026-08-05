@@ -21,6 +21,15 @@
 #include "volk.hpp"
 #include "object.h"
 
+
+class Scene {
+    public:
+        std::vector<Object> objects;
+
+        void add_object_to_scene(Object object);
+
+};
+
 class Renderer {
 public:
     static constexpr uint32_t max_frames_in_flight = 2;
@@ -30,6 +39,8 @@ public:
     Mesh load_mesh(std::string filepath);
     Texture load_texture(std::string filepath);
     Shader load_shader(std::string filepath);
+
+    void render_scene(Scene scene);
 
 private:
     struct ShaderData {
@@ -114,6 +125,9 @@ private:
     // Shaders
     void create_slang_session();
 
+    // Rendering pipeline
+    void setup_rendering_pipeline();
+
 private:
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -157,6 +171,7 @@ private:
 
     Slang::ComPtr<slang::IGlobalSession> slang_global_session;
     Slang::ComPtr<slang::ISession> slang_session;
+
 };
 
 

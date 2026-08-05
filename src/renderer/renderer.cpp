@@ -57,6 +57,10 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
+void Renderer::render_scene(Scene scene) {
+    return; // TODO: Rendering
+}
+
 Mesh Renderer::load_mesh(std::string filepath) {
     Mesh mesh(filepath);
     mesh.load_mesh_into_buffer(allocator);

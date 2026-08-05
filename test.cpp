@@ -7,6 +7,7 @@
 int main() {
     std::cout << "Starting...\n";
     Renderer renderer("Test", 1280, 720);
+    Scene scene;
     
     // Load meshes, textures and shaders
     Mesh monkey_mesh = renderer.load_mesh("assets/monkey.obj");
@@ -17,6 +18,13 @@ int main() {
 
     // Create a monkey object
     Object monkey(&monkey_mesh, &gravel_material);
+
+    // Add objects to scene
+    scene.add_object_to_scene(monkey);
+
+    // while (1) {
+    //     renderer.render_scene(scene); // Render the scene
+    // }
 
     // Wait 5s to see the window
     SDL_Delay(5000);
