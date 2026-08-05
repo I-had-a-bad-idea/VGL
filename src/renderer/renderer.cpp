@@ -74,3 +74,7 @@ Texture Renderer::load_texture(std::string filepath) {
 
     return texture;
 }
+
+Shader Renderer::load_shader(std::string filepath) {
+    return Shader(filepath, device, slang_session);
+}

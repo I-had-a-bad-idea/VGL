@@ -8,6 +8,9 @@
 #include <tinyobj/tiny_obj_loader.h>
 #include <ktx.h>
 #include <ktxvulkan.h>
+#include <slang/slang.h>
+#include <slang/slang-com-ptr.h>
+
 
 #include <string>
 #include <vector>
@@ -52,14 +55,18 @@ class Texture {
 
 class Shader {
     public:
-        Shader(std::string filepath);
+        Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISession> slang_session);
+    
+    private:
+        VkShaderModule shader_module {};
+    
 };
 
 class Material {
     public:
         Texture* albedo;
         Shader* shader;
-        Material(Texture* texture);
+        Material(Texture* texture, Shader* shader);
 };
 
 class Object {

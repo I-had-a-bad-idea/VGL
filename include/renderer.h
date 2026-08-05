@@ -29,6 +29,7 @@ public:
 
     Mesh load_mesh(std::string filepath);
     Texture load_texture(std::string filepath);
+    Shader load_shader(std::string filepath);
 
 private:
     struct ShaderData {
