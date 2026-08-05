@@ -1,7 +1,7 @@
 #include "renderer.h"
 
 void Renderer::create_command_buffers() {
-    // 1. Create a command poll, since it helps the driver optimize allocations (and since it is required for that reason)
+    // 1. Create a command pool, since it helps the driver optimize allocations (and since it is required for that reason)
     VkCommandPoolCreateInfo command_pool_CI {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, // We reset command buffers before recording them

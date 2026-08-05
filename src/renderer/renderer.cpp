@@ -78,12 +78,17 @@ void Renderer::render_scene(Scene scene) {
     // Update shader data
     shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, 0.1f, 32.0f);    
     shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
-    std::vector<ObjectData> object_data(scene.objects.size());
     for (size_t i = 0; i < scene.objects.size(); i++) {
-        object_data[i].model = scene.objects[i].model_matrix();
-        object_data[i].selected = scene.objects[i].selected;
+        if (i >= max_objects) {
+            std::cerr << "Warning: Maximum number of objects in scene exceeded. Max: " << max_objects << ", Current: " << scene.objects.size() << std::endl;
+            break;
+        }
+        
+        shader_data.objects[i].model = scene.objects[i].model_matrix();
+        shader_data.objects[i].selected = scene.objects[i].selected;
     }
-    memcpy(shader_data_buffers[frame_index].allocationInfo.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
+
+    memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {

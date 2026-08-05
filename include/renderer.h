@@ -37,6 +37,7 @@ class Renderer {
 public:
     static constexpr uint32_t max_frames_in_flight = 2;
     static constexpr uint32_t max_textures = 4096;
+    static constexpr uint32_t max_objects = 4096;
 
     Renderer(std::string name, int w, int h);
 
@@ -61,16 +62,15 @@ private:
     struct ShaderData {
         glm::mat4 projection;
         glm::mat4 view;
-        glm::mat4 model[3];
         glm::vec4 lightPos{ 0.0f, -10.0f, 10.0f, 0.0f };
-        uint32_t selected{1};
+        std::array<ObjectData, max_objects> objects;
     };
 
     struct ShaderDataBuffer {
-        VmaAllocation allocation{ VK_NULL_HANDLE };
-        VmaAllocationInfo allocationInfo{};
-        VkBuffer buffer{ VK_NULL_HANDLE };
-        VkDeviceAddress deviceAddress{};
+        VmaAllocation allocation {VK_NULL_HANDLE};
+        VmaAllocationInfo allocation_info {};
+        VkBuffer buffer {VK_NULL_HANDLE};
+        VkDeviceAddress deviceAddress {};
     };
 
     struct QueueInfo {
