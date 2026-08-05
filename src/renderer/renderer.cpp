@@ -225,6 +225,35 @@ void Renderer::render_scene(Scene scene) {
     // we dont need a barrier for the depth image, as we dont use that outside of this render pass
 
     vkEndCommandBuffer(cb); // end comamnd buffer
+
+
+    // submit command buffer
+    VkSemaphoreSubmitInfo wait_semaphore_info {
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+        .semaphore = image_acquired_semaphores[frame_index],
+        .stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+    };
+    VkCommandBufferSubmitInfo cb_submit_info {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
+        .commandBuffer = cb
+    };
+    VkSemaphoreSubmitInfo signal_semaphore_info {
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+        .semaphore = render_complete_semaphores[image_index],
+        .stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+    };
+    VkSubmitInfo2 submit_info {
+        .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO_2,
+        .waitSemaphoreInfoCount = 1,
+        .pWaitSemaphoreInfos = &wait_semaphore_info,
+        .commandBufferInfoCount = 1,
+        .pCommandBufferInfos = &cb_submit_info,
+        .signalSemaphoreInfoCount = 1,
+        .pSignalSemaphoreInfos = &signal_semaphore_info,
+    };
+    vk_check(vkQueueSubmit2(graphics_queue, 1, &submit_info, fences[frame_index])); // submit command buffer
+
+    frame_index = (frame_index + 1) % max_frames_in_flight; // set frame_index for next render loop iteration
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {
