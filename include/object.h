@@ -3,6 +3,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
 #include <tinyobj/tiny_obj_loader.h>
@@ -78,8 +79,13 @@ class Object {
     public:
         Mesh* mesh;
         Material* material;
-        glm::mat4 transform;
+        glm::vec3 position;
+        glm::vec3 rotation;
+
+        uint32_t selected;
 
         Object(Mesh* mesh, Material* material);
+
+        glm::mat4 model_matrix();
 
 };

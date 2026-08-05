@@ -1,6 +1,17 @@
 #include "renderer.h"
 
 
+inline void Renderer::vk_check_swapchain(VkResult result) {
+	if (result < VK_SUCCESS) {
+		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+			update_swapchain = true;
+			return;
+		}
+		std::cerr << "Vulkan call returned an error (" << result << ")\n";
+		exit(result);
+	}
+}
+
 Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Initializing up SDL...\n";
     init_sdl();
@@ -58,7 +69,21 @@ Renderer::Renderer(std::string name, int w, int h) {
 }
 
 void Renderer::render_scene(Scene scene) {
-    return; // TODO: Rendering
+    // Wait for fence
+    vk_check(vkWaitForFences(device, 1, &fences[frame_index], true, UINT64_MAX));
+    vk_check(vkResetFences(device, 1, &fences[frame_index]));
+    // Acquire next swapchain image
+    vk_check_swapchain(vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_acquired_semaphores[frame_index], VK_NULL_HANDLE, &image_index));
+    
+    // Update shader data
+    shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, 0.1f, 32.0f);    
+    shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
+    std::vector<ObjectData> object_data(scene.objects.size());
+    for (size_t i = 0; i < scene.objects.size(); i++) {
+        object_data[i].model = scene.objects[i].model_matrix();
+        object_data[i].selected = scene.objects[i].selected;
+    }
+    memcpy(shader_data_buffers[frame_index].allocationInfo.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {

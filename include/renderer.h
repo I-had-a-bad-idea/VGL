@@ -3,6 +3,8 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <volk/volk.h>
 #include <vma/vk_mem_alloc.h>
 #include <SDL3/SDL.h>
@@ -25,6 +27,7 @@
 class Scene {
     public:
         std::vector<Object> objects;
+        glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
 
         void add_object_to_scene(Object object);
 
@@ -34,6 +37,7 @@ class Renderer {
 public:
     static constexpr uint32_t max_frames_in_flight = 2;
     static constexpr uint32_t max_textures = 4096;
+
     Renderer(std::string name, int w, int h);
 
     Mesh load_mesh(std::string filepath);
@@ -43,13 +47,24 @@ public:
     void render_scene(Scene scene);
 
 private:
+
+    struct GlobalData {
+        glm::mat4 projection;
+        glm::mat4 view;
+        glm::vec4 lightPos;
+    };
+    struct ObjectData {
+        glm::mat4 model;
+        uint32_t selected;
+    };
+
     struct ShaderData {
         glm::mat4 projection;
         glm::mat4 view;
         glm::mat4 model[3];
         glm::vec4 lightPos{ 0.0f, -10.0f, 10.0f, 0.0f };
         uint32_t selected{1};
-    } shaderData{};
+    };
 
     struct ShaderDataBuffer {
         VmaAllocation allocation{ VK_NULL_HANDLE };
@@ -128,7 +143,13 @@ private:
     // Rendering pipeline
     void create_graphics_pipeline(Shader& shader);
 
+    inline void vk_check_swapchain(VkResult result);
+
 private:
+    uint32_t image_index {0};
+    uint32_t frame_index {0};
+    bool update_swapchain {false};
+
     VkInstance instance = VK_NULL_HANDLE;
 
     std::vector<VkPhysicalDevice> physical_devices;
@@ -153,6 +174,7 @@ private:
     VmaAllocation depth_image_allocation;
     VkImageView depth_image_view;
 
+    ShaderData shader_data {};
     std::array<ShaderDataBuffer, max_frames_in_flight> shader_data_buffers;
 
     std::array<VkFence, max_frames_in_flight> fences;
