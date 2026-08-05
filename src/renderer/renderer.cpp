@@ -80,5 +80,8 @@ Texture Renderer::load_texture(std::string filepath) {
 }
 
 Shader Renderer::load_shader(std::string filepath) {
-    return Shader(filepath, device, slang_session);
+    Shader shader(filepath, device, slang_session);
+    create_graphics_pipeline(shader);
+
+    return shader;
 }

@@ -126,7 +126,7 @@ private:
     void create_slang_session();
 
     // Rendering pipeline
-    void setup_rendering_pipeline();
+    void create_graphics_pipeline(Shader& shader);
 
 private:
     VkInstance instance = VK_NULL_HANDLE;

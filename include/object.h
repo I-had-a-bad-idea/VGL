@@ -53,15 +53,17 @@ class Texture {
         ktxTexture* ktx_texture {nullptr};
 };
 
+struct GraphicsPipeline {
+    VkPipeline pipeline;
+    VkPipelineLayout layout;
+};
+
 class Shader {
     public:
-        Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISession> slang_session);
-    
-    private:
+        GraphicsPipeline graphics_pipeline;
         VkShaderModule shader_module {};
 
-        VkPipeline pipeline;
-        VkPipelineLayout layout;
+        Shader(std::string filepath, VkDevice device, Slang::ComPtr<slang::ISession> slang_session);        
     
 };
 
