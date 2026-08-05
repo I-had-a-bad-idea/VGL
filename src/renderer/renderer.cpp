@@ -4,7 +4,7 @@
 inline void Renderer::vk_check_swapchain(VkResult result) {
 	if (result < VK_SUCCESS) {
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-			update_swapchain = true;
+			swapchain_update_required = true;
 			return;
 		}
 		std::cerr << "Vulkan call returned an error (" << result << ")\n";
@@ -40,7 +40,7 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Creating window...\n";
     window = create_window(name, w, h);
     window_data = create_vulkan_surface_for_window();
-    VkSurfaceCapabilitiesKHR surface_caps = get_surface_properties();
+    surface_caps = get_surface_properties();
 
     std::cout << "Creating swapchain...\n";
     swapchain = create_swapchain(surface_caps);
@@ -264,6 +264,10 @@ void Renderer::render_scene(Scene scene) {
         .pSwapchains = &swapchain,
         .pImageIndices = &image_index
     };
+
+    if (swapchain_update_required) {
+        update_swapchain();
+    }
 }
 
 Mesh Renderer::load_mesh(std::string filepath) {

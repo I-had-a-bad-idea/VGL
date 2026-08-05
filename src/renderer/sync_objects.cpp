@@ -5,7 +5,7 @@ void Renderer::create_sync_objects() {
     // Fences: Signal work completion from GPU to CPU
     // Semaphores: Control access to resources on the GPU (only)
 
-    VkSemaphoreCreateInfo semaphore_CI {
+    semaphore_CI = VkSemaphoreCreateInfo {
         .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
     };
     VkFenceCreateInfo fence_CI {

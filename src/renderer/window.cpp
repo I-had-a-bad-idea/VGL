@@ -44,7 +44,7 @@ VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps)
         swapchain_extent = { .width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y) };
     }
     image_format = VkFormat {VK_FORMAT_B8G8R8A8_SRGB};
-    VkSwapchainCreateInfoKHR swapchain_CI {
+    swapchain_CI = VkSwapchainCreateInfoKHR {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .surface = window_data.surface,
         .minImageCount = surface_caps.minImageCount,
@@ -68,7 +68,6 @@ Renderer::SwapchainData Renderer::get_swapchain_data() {
     std::vector<VkImage> swapchain_images;
     std::vector<VkImageView> swapchain_image_views;
 
-    uint32_t image_count {0};
     vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr));
     swapchain_images.resize(image_count);
     vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, swapchain_images.data()));
@@ -105,7 +104,7 @@ VkFormat Renderer::get_depth_format() {
 }
 
 void Renderer::create_depth_image_and_depth_image_view() {
-    VkImageCreateInfo depth_image_CI {
+    depth_image_CI = VkImageCreateInfo {
         .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
         .imageType = VK_IMAGE_TYPE_2D,
         .format = depth_format,
@@ -129,4 +128,63 @@ void Renderer::create_depth_image_and_depth_image_view() {
         .subresourceRange {.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .levelCount = 1, .layerCount = 1}
     };
     vk_check(vkCreateImageView(device, &depth_view_CI, nullptr, &depth_image_view));
+}
+
+
+void Renderer::update_swapchain() {
+    swapchain_update_required = false;
+    vk_check(vkDeviceWaitIdle(device));
+    vk_check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_devices[device_index], window_data.surface, &surface_caps));
+    swapchain_CI.oldSwapchain = swapchain;
+    swapchain_CI.imageExtent = {.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y)};
+    vk_check(vkCreateSwapchainKHR(device, &swapchain_CI, nullptr, &swapchain)); // recreate swapchain
+
+    for (auto i = 0; i < image_count; i++) {
+        vkDestroyImageView(device, swapchain_data.swapchain_image_views[i], nullptr);
+    }
+    vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, nullptr));
+    swapchain_data.swapchain_images.resize(image_count);
+    vk_check(vkGetSwapchainImagesKHR(device, swapchain, &image_count, swapchain_data.swapchain_images.data()));
+    swapchain_data.swapchain_image_views.resize(image_count);
+
+    for (auto i = 0; i < image_count; i++) {
+        VkImageViewCreateInfo view_CI {
+            .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+            .image = swapchain_data.swapchain_images[i],
+            .viewType = VK_IMAGE_VIEW_TYPE_2D,
+            .format = image_format,
+            .subresourceRange = {.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1}
+        };
+        vk_check(vkCreateImageView(device, &view_CI, nullptr, &swapchain_data.swapchain_image_views[i]));
+    }
+
+    // Recreate semaphores
+    for (auto& semaphore : render_complete_semaphores) {
+        vkDestroySemaphore(device, semaphore, nullptr);
+    }
+    render_complete_semaphores.resize(image_count);
+    for (auto& semaphore : render_complete_semaphores) {
+        vk_check(vkCreateSemaphore(device, &semaphore_CI, nullptr, &semaphore));
+    }
+
+    vkDestroySwapchainKHR(device, swapchain_CI.oldSwapchain, nullptr);
+    vmaDestroyImage(allocator, depth_image, depth_image_allocation);
+    vkDestroyImageView(device, depth_image_view, nullptr);
+    depth_image_CI.extent = {.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y), .depth = 1};
+
+    VmaAllocationCreateInfo alloc_CI {
+        .flags = VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT,
+        .usage = VMA_MEMORY_USAGE_AUTO
+    };
+    vk_check(vmaCreateImage(allocator, &depth_image_CI, &alloc_CI, &depth_image, &depth_image_allocation, nullptr));
+
+    VkImageViewCreateInfo view_CI {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .image = depth_image,
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = depth_format,
+        .subresourceRange = {.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .levelCount = 1, .layerCount = 1 }
+    };
+
+    vk_check(vkCreateImageView(device, &view_CI, nullptr, &depth_image_view));
 }

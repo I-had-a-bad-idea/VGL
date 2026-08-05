@@ -14,7 +14,7 @@ void Renderer::create_shader_buffers() {
             .usage = VMA_MEMORY_USAGE_AUTO
         };
 
-        vk_check(vmaCreateBuffer(allocator, &u_buffer_CI, &u_buffer_alloc_CI, &shader_data_buffers[i].buffer, &shader_data_buffers[i].allocation, &shader_data_buffers[i].allocationInfo));
+        vk_check(vmaCreateBuffer(allocator, &u_buffer_CI, &u_buffer_alloc_CI, &shader_data_buffers[i].buffer, &shader_data_buffers[i].allocation, &shader_data_buffers[i].allocation_info));
 
         // store device address for later
         VkBufferDeviceAddressInfo u_buffer_bda_info {

@@ -144,11 +144,13 @@ private:
     void create_graphics_pipeline(Shader& shader);
 
     inline void vk_check_swapchain(VkResult result);
+    void update_swapchain();
+
 
 private:
     uint32_t image_index {0};
     uint32_t frame_index {0};
-    bool update_swapchain {false};
+    bool swapchain_update_required {false};
 
     VkInstance instance = VK_NULL_HANDLE;
 
@@ -162,6 +164,11 @@ private:
 
     SDL_Window* window = nullptr;
     WindowData window_data;
+    VkSurfaceCapabilitiesKHR surface_caps;
+    VkSwapchainCreateInfoKHR swapchain_CI;
+    uint32_t image_count {0};
+    VkSemaphoreCreateInfo semaphore_CI;
+    VkImageCreateInfo depth_image_CI;
 
     VkFormat image_format;
     VkSwapchainKHR swapchain = VK_NULL_HANDLE;
