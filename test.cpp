@@ -25,11 +25,13 @@ int main() {
     std::cout << "Adding object(s) to scene...\n";
     // Add objects to scene
     scene.add_object_to_scene(monkey);
+    scene.add_object_to_scene(monkey);
 
     std::cout << "Starting rendering..." << std::endl;
-    // while (1) {
-    //     renderer.render_scene(scene); // Render the scene
-    // }
+    while (1) {
+        std::cout << "i\n";
+        renderer.render_scene(scene); // Render the scene
+    }
 
     // Wait 5s to see the window
     SDL_Delay(5000);

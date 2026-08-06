@@ -71,11 +71,25 @@ Renderer::Renderer(std::string name, int w, int h) {
 }
 
 std::unordered_map<Shader*, std::vector<Object>> group_objects_by_shader(const std::vector<Object>& objects) {
-    std::vector<Object> grouped_objects;
     std::unordered_map<Shader*, std::vector<Object>> shader_to_objects;
 
     // Group objects by their shader
     for (const auto& obj : objects) {
+
+        if (!obj.mesh) {
+            std::cerr << "Object has no mesh\n";
+            continue;
+        }
+
+        if (!obj.material) {
+            std::cerr << "Object has no material\n";
+            continue;
+        }
+
+        if (!obj.material->shader) {
+            std::cerr << "Material has no shader\n";
+            continue;
+        }
         shader_to_objects[obj.material->shader].push_back(obj);
     }
     return shader_to_objects;
@@ -87,7 +101,7 @@ void Renderer::render_scene(Scene scene) {
     vk_check(vkResetFences(device, 1, &fences[frame_index]));
     // Acquire next swapchain image
     vk_check_swapchain(vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_acquired_semaphores[frame_index], VK_NULL_HANDLE, &image_index));
-    
+    std::cout << "Waited for fence and qcquired next swapchain image\n";
     // Update shader data
     shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, 0.1f, 32.0f);    
     shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
@@ -102,7 +116,7 @@ void Renderer::render_scene(Scene scene) {
     }
 
     memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
-
+    std::cout << "Updated shader data\n";
     // Command buffer
     auto cb = command_buffers[frame_index];
     vk_check(vkResetCommandBuffer(cb, 0));
@@ -185,8 +199,10 @@ void Renderer::render_scene(Scene scene) {
     VkRect2D scissor {.extent{.width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y)}};
     vkCmdSetScissor(cb, 0, 1, &scissor);
 
+    std::cout << "Rendering scene with " << scene.objects.size() << " objects...\n";
     // For each shader do the pipeline
     auto shader_to_objects = group_objects_by_shader(scene.objects);
+    std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
     for (const auto& [shader, objects] : shader_to_objects) {
         // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
@@ -204,7 +220,7 @@ void Renderer::render_scene(Scene scene) {
         }
     }
     vkCmdEndRendering(cb);
-
+    std::cout << "Finished rendering scene\n";
     // transition swapchain image to a layout for presentation
     VkImageMemoryBarrier2 barrier_present {
         .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
