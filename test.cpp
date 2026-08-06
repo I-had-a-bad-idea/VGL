@@ -29,7 +29,6 @@ int main() {
 
     std::cout << "Starting rendering..." << std::endl;
     while (1) {
-        std::cout << "i\n";
         renderer.render_scene(scene); // Render the scene
     }
 
