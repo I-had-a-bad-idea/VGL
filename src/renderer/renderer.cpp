@@ -188,8 +188,13 @@ void Renderer::render_scene(const Scene& scene) {
             // bind vertext/index buffers
             vkCmdBindVertexBuffers(cb, 0, 1, &obj->mesh->v_buffer, &v_offset);
             vkCmdBindIndexBuffer(cb, obj->mesh->v_buffer, obj->mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
+            
+            PushConstants pc {
+                .shader_data_addrress = shader_data_buffers[frame_index].deviceAddress,
+                .time = static_cast<float>(SDL_GetTicks()) / 1000.0f
+            };
 
-            vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(VkDeviceAddress), &shader_data_buffers[frame_index].deviceAddress);
+            vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pc);
             // Finally actually draw
             vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
         }

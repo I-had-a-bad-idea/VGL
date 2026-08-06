@@ -2,16 +2,16 @@
 
 
 void Renderer::create_graphics_pipeline(Shader& shader) {
-    VkPushConstantRange push_consant_range {
+    VkPushConstantRange push_constant_range {
         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-        .size = sizeof(VkDeviceAddress) // we willl pass a pointer to the shader buffer
+        .size = sizeof(PushConstants)
     };
     VkPipelineLayoutCreateInfo pipeline_layout_CI {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .setLayoutCount = 1,
         .pSetLayouts = &descriptor_set_layout_tex,
         .pushConstantRangeCount = 1,
-        .pPushConstantRanges = &push_consant_range
+        .pPushConstantRanges = &push_constant_range
     };
     // Create pipeline layout
     vk_check(vkCreatePipelineLayout(device, &pipeline_layout_CI, nullptr, &shader.graphics_pipeline.layout));

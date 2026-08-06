@@ -11,6 +11,11 @@ struct ObjectData {
     uint32_t selected;
 };
 
+struct PushConstants {
+    ShaderData* shader_data_addrress;
+    float time;
+};
+
 struct ShaderData {
     float4x4 projection;
     float4x4 view;
@@ -31,10 +36,11 @@ struct VSOutput {
 [shader("vertex")]
 VSOutput main(
     VSInput input,
-    uniform ShaderData *shaderData,
+    uniform PushConstants pushConstants,
     uint instanceIndex : SV_VulkanInstanceID)
 {
     VSOutput output;
+    ShaderData* shaderData = (ShaderData*)pushConstants.shader_data_addrress;
 
     ObjectData obj = shaderData->objects[instanceIndex];
     float4x4 modelMat = obj.model;

@@ -6,6 +6,7 @@ Mesh::Mesh(std::string path) {
     std::vector<tinyobj::material_t> materials;
 
     vk_check(tinyobj::LoadObj(&attrib, &shapes, &materials, nullptr, nullptr, path.c_str())); // load file
+    
 
     index_count = VkDeviceSize {shapes[0].mesh.indices.size()};
     //load vertex and index data

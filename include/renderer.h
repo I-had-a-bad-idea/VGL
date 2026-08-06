@@ -24,6 +24,11 @@
 #include "object.h"
 
 
+struct PushConstants {
+    VkDeviceAddress shader_data_addrress;
+    float time;
+};
+
 class Scene {
     public:
         std::vector<Object*> objects;

@@ -25,7 +25,6 @@ int main() {
     std::cout << "Adding object(s) to scene...\n";
     // Add objects to scene
     scene.add_object_to_scene(&monkey);
-    scene.add_object_to_scene(&monkey);
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() };
