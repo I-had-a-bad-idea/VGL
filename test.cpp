@@ -28,12 +28,31 @@ int main() {
     scene.add_object_to_scene(monkey);
 
     std::cout << "Starting rendering..." << std::endl;
-    while (1) {
+    uint64_t last_time{ SDL_GetTicks() };
+    bool quit{ false };
+    while (!quit) {
         renderer.render_scene(scene); // Render the scene
-    }
+        
+        float elapsed_time{ (SDL_GetTicks() - last_time) / 1000.0f };
+        last_time = SDL_GetTicks();
+        
+        // Display FPS in the console
+        float fps{ 1.0f / elapsed_time };
+        std::cout << "FPS: " << fps << std::endl;
 
-    // Wait 5s to see the window
-    SDL_Delay(5000);
+        for (SDL_Event event; SDL_PollEvent(&event);) {
+            // Exit loop if the application is about to close
+            if (event.type == SDL_EVENT_QUIT) {
+                quit = true;
+                break;
+            }
+
+            // Zooming with the mouse wheel
+            if (event.type == SDL_EVENT_MOUSE_WHEEL) {
+                scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 10.0f;
+            }
+        }
+    }
 
     // Destroy resources
     renderer.destroy_mesh(monkey_mesh);
