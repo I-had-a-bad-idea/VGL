@@ -70,31 +70,6 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
-std::unordered_map<Shader*, std::vector<Object*>> group_objects_by_shader(const std::vector<Object*>& objects) {
-    std::unordered_map<Shader*, std::vector<Object*>> shader_to_objects;
-
-    // Group objects by their shader
-    for (auto* obj : objects) {
-
-        if (!obj->mesh) {
-            std::cerr << "Object has no mesh\n";
-            continue;
-        }
-
-        if (!obj->material) {
-            std::cerr << "Object has no material\n";
-            continue;
-        }
-
-        if (!obj->material->shader) {
-            std::cerr << "Material has no shader\n";
-            continue;
-        }
-        shader_to_objects[obj->material->shader].push_back(obj);
-    }
-    return shader_to_objects;
-}
-
 void Renderer::render_scene(const Scene& scene) {
     // Wait for fence
     vk_check(vkWaitForFences(device, 1, &fences[frame_index], true, UINT64_MAX));
@@ -167,7 +142,7 @@ void Renderer::render_scene(const Scene& scene) {
         .imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
         .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
         .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-        .clearValue {.color{0.0f, 0.0f, 0.2f, 1.0f}}
+        .clearValue {.color{0.0f, 0.0f, 0.0f, 0.0f}}
     };
     VkRenderingAttachmentInfo depth_attachment_info {
         .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
@@ -202,9 +177,8 @@ void Renderer::render_scene(const Scene& scene) {
 
     // std::cout << "Rendering scene with " << scene.objects.size() << " objects...\n";
     // For each shader do the pipeline
-    auto shader_to_objects = group_objects_by_shader(scene.objects);
     // std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
-    for (const auto& [shader, objects] : shader_to_objects) {
+    for (const auto& [shader, objects] : scene.objects_by_shader) {
         // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
         VkDeviceSize v_offset {0};
