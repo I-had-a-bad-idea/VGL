@@ -12,7 +12,9 @@
 #include <slang/slang.h>
 #include <slang/slang-com-ptr.h>
 
-
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 

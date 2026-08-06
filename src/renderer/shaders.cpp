@@ -37,7 +37,7 @@ void Renderer::create_slang_session() {
 
     auto slang_options {std::to_array<slang::CompilerOptionEntry>({ {
         slang::CompilerOptionName::EmitSpirvDirectly,
-        {slang::CompilerOptionValueKind::Int, 1}
+        {slang::CompilerOptionValueKind::Int, 1, 0, nullptr, nullptr}
     } })};
 
     slang::SessionDesc slang_session_desc {
@@ -45,7 +45,7 @@ void Renderer::create_slang_session() {
         .targetCount {SlangInt(slang_targets.size())},
         .defaultMatrixLayoutMode = SLANG_MATRIX_LAYOUT_COLUMN_MAJOR,
         .compilerOptionEntries {slang_options.data()},
-        .compilerOptionEntryCount {uint32_t(slang_options.size())}
+        .compilerOptionEntryCount {slang_options.size()}
     };
 
     slang_global_session->createSession(slang_session_desc, slang_session.writeRef());
