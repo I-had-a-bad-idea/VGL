@@ -55,7 +55,7 @@ class Texture {
 	    VkSampler sampler {VK_NULL_HANDLE};
         uint32_t descriptor_index;
 
-        void load_image_into_buffer(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
+        void load_image_into_buffer(VkPhysicalDevice physical_device, VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator);
 
         void destroy(VkDevice device, VmaAllocator allocator);
 

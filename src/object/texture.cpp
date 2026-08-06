@@ -5,11 +5,21 @@ Texture::Texture(std::string path) {
     ktxTexture_CreateFromNamedFile(path.c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktx_texture); // load texture from file
 }
 
-void Texture::load_image_into_buffer(VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator) {
+void Texture::load_image_into_buffer(VkPhysicalDevice physical_device, VkDevice device, VkCommandPool command_pool, VkQueue graphics_queue, VmaAllocator allocator) {
+    VkFormat format = ktxTexture_GetVkFormat(ktx_texture);
+
+    VkFormatProperties props;
+    vkGetPhysicalDeviceFormatProperties(physical_device, format, &props);
+
+    if (!(props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)) { // if format is unsuported
+        format = VK_FORMAT_R8G8B8A8_SRGB; // fallback (should be common)
+    }
+    
+    
     VkImageCreateInfo texture_image_CI {
         .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
         .imageType = VK_IMAGE_TYPE_2D,
-        .format = ktxTexture_GetVkFormat(ktx_texture),
+        .format = format,
         .extent {.width = ktx_texture->baseWidth, .height = ktx_texture->baseHeight, .depth = 1},
         .mipLevels = ktx_texture->numLevels,
         .arrayLayers = 1,

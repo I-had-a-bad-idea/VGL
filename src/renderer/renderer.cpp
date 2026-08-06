@@ -277,7 +277,7 @@ Mesh Renderer::load_mesh(std::string filepath) {
 
 Texture Renderer::load_texture(std::string filepath) {
     Texture texture(filepath);
-    texture.load_image_into_buffer(device, command_pool, graphics_queue, allocator);
+    texture.load_image_into_buffer(physical_devices[device_index], device, command_pool, graphics_queue, allocator);
 
     uint32_t id = textures.size();
     textures.push_back(texture);
