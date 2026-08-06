@@ -98,6 +98,6 @@ class Object {
 
         Object(Mesh* mesh, Material* material);
 
-        glm::mat4 model_matrix();
+        glm::mat4 model_matrix() const;
 
 };

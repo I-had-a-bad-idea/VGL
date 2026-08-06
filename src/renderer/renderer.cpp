@@ -95,7 +95,7 @@ std::unordered_map<Shader*, std::vector<Object>> group_objects_by_shader(const s
     return shader_to_objects;
 }
 
-void Renderer::render_scene(Scene scene) {
+void Renderer::render_scene(const Scene& scene) {
     // Wait for fence
     vk_check(vkWaitForFences(device, 1, &fences[frame_index], true, UINT64_MAX));
     vk_check(vkResetFences(device, 1, &fences[frame_index]));
@@ -111,8 +111,9 @@ void Renderer::render_scene(Scene scene) {
             break;
         }
         
-        shader_data.objects[i].model = scene.objects[i].model_matrix();
-        shader_data.objects[i].selected = scene.objects[i].selected;
+        const Object& object = scene.objects[i];
+        shader_data.objects[i].model = object.model_matrix();
+        shader_data.objects[i].selected = object.selected;
     }
 
     memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over

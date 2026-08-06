@@ -29,16 +29,23 @@ int main() {
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() };
+    uint64_t fps_update_time{ last_time };
+    uint32_t frame_count{ 0 };
     bool quit{ false };
     while (!quit) {
+        uint64_t now = SDL_GetTicks();
+        float elapsed_time{ (now - last_time) / 1000.0f };
+        last_time = now;
+
         renderer.render_scene(scene); // Render the scene
-        
-        float elapsed_time{ (SDL_GetTicks() - last_time) / 1000.0f };
-        last_time = SDL_GetTicks();
-        
-        // Display FPS in the console
-        float fps{ 1.0f / elapsed_time };
-        std::cout << "FPS: " << fps << std::endl;
+        ++frame_count;
+
+        if (now - fps_update_time >= 1000) {
+            float fps{ static_cast<float>(frame_count) / ((now - fps_update_time) / 1000.0f) };
+            std::cout << "FPS: " << fps << '\n';
+            frame_count = 0;
+            fps_update_time = now;
+        }
 
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close

@@ -45,7 +45,7 @@ public:
     Texture load_texture(std::string filepath);
     Shader load_shader(std::string filepath);
 
-    void render_scene(Scene scene);
+    void render_scene(const Scene& scene);
 
     void destroy_mesh(Mesh mesh);
     void destroy_texture(Texture texture);
