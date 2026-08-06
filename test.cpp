@@ -24,8 +24,8 @@ int main() {
 
     std::cout << "Adding object(s) to scene...\n";
     // Add objects to scene
-    scene.add_object_to_scene(monkey);
-    scene.add_object_to_scene(monkey);
+    scene.add_object_to_scene(&monkey);
+    scene.add_object_to_scene(&monkey);
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() };
@@ -47,6 +47,8 @@ int main() {
             fps_update_time = now;
         }
 
+        monkey.rotation.y += elapsed_time;
+
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close
             if (event.type == SDL_EVENT_QUIT) {
@@ -56,7 +58,7 @@ int main() {
 
             // Zooming with the mouse wheel
             if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-                scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 10.0f;
+                scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 100.0f;
             }
         }
     }

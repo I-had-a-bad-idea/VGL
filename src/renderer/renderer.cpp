@@ -70,27 +70,27 @@ Renderer::Renderer(std::string name, int w, int h) {
     std::cout << "Render setup completed!" << std::endl;
 }
 
-std::unordered_map<Shader*, std::vector<Object>> group_objects_by_shader(const std::vector<Object>& objects) {
-    std::unordered_map<Shader*, std::vector<Object>> shader_to_objects;
+std::unordered_map<Shader*, std::vector<Object*>> group_objects_by_shader(const std::vector<Object*>& objects) {
+    std::unordered_map<Shader*, std::vector<Object*>> shader_to_objects;
 
     // Group objects by their shader
-    for (const auto& obj : objects) {
+    for (auto* obj : objects) {
 
-        if (!obj.mesh) {
+        if (!obj->mesh) {
             std::cerr << "Object has no mesh\n";
             continue;
         }
 
-        if (!obj.material) {
+        if (!obj->material) {
             std::cerr << "Object has no material\n";
             continue;
         }
 
-        if (!obj.material->shader) {
+        if (!obj->material->shader) {
             std::cerr << "Material has no shader\n";
             continue;
         }
-        shader_to_objects[obj.material->shader].push_back(obj);
+        shader_to_objects[obj->material->shader].push_back(obj);
     }
     return shader_to_objects;
 }
@@ -111,9 +111,9 @@ void Renderer::render_scene(const Scene& scene) {
             break;
         }
         
-        const Object& object = scene.objects[i];
-        shader_data.objects[i].model = object.model_matrix();
-        shader_data.objects[i].selected = object.selected;
+        const Object* object = scene.objects[i];
+        shader_data.objects[i].model = object->model_matrix();
+        shader_data.objects[i].selected = object->selected;
     }
 
     memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
@@ -210,14 +210,14 @@ void Renderer::render_scene(const Scene& scene) {
         VkDeviceSize v_offset {0};
         vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.layout, 0, 1, &descriptor_set_tex, 0, nullptr);
         
-        for (const Object& obj : objects) {
+        for (auto* obj : objects) {
             // bind vertext/index buffers
-            vkCmdBindVertexBuffers(cb, 0, 1, &obj.mesh->v_buffer, &v_offset);
-            vkCmdBindIndexBuffer(cb, obj.mesh->v_buffer, obj.mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
+            vkCmdBindVertexBuffers(cb, 0, 1, &obj->mesh->v_buffer, &v_offset);
+            vkCmdBindIndexBuffer(cb, obj->mesh->v_buffer, obj->mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
 
             vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(VkDeviceAddress), &shader_data_buffers[frame_index].deviceAddress);
             // Finally actually draw
-            vkCmdDrawIndexed(cb, obj.mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
+            vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
         }
     }
     vkCmdEndRendering(cb);

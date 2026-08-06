@@ -26,10 +26,10 @@
 
 class Scene {
     public:
-        std::vector<Object> objects;
+        std::vector<Object*> objects;
         glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
 
-        void add_object_to_scene(Object object);
+        void add_object_to_scene(Object* object);
 
 };
 
