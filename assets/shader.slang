@@ -68,8 +68,11 @@ float4 main(VSOutput input) {
     float3 L = normalize(input.LightVec);
     float3 V = normalize(input.ViewVec);
     float3 R = reflect(-L, N);
+
+    float3 ambient = 0.1;
+
     float3 diffuse = max(dot(N, L), 0.0025);
     // Sample from texture
     float3 color = textures[NonUniformResourceIndex(input.InstanceIndex)].Sample(input.UV).rgb * input.Factor;
-    return float4(diffuse * color.rgb, 1.0);
+    return float4((ambient + diffuse) * color.rgb, 1.0);
 }
