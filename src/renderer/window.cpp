@@ -43,11 +43,35 @@ VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps)
     if (surface_caps.currentExtent.width == 0xFFFFFFFF) { // special value indicating, that the surace size will be determined by window size
         swapchain_extent = { .width = static_cast<uint32_t>(window_data.x), .height = static_cast<uint32_t>(window_data.y) };
     }
+
+    uint32_t present_mode_count = 0;
+    vk_check(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_devices[device_index], window_data.surface, &present_mode_count, nullptr));
+    std::vector<VkPresentModeKHR> present_modes(present_mode_count);
+    vk_check(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_devices[device_index], window_data.surface, &present_mode_count, present_modes.data()));
+
+    VkPresentModeKHR present_mode = VK_PRESENT_MODE_FIFO_KHR;
+    for (VkPresentModeKHR candidate : {VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR}) { // these modes allow for 3-buffering or no waiting at all (so not dependent on monitor refresh rate)
+        for (VkPresentModeKHR supported_mode : present_modes) {
+            if (supported_mode == candidate) {
+                present_mode = candidate;
+                break;
+            }
+        }
+        if (present_mode != VK_PRESENT_MODE_FIFO_KHR) {
+            break;
+        }
+    }
+
+    uint32_t desired_image_count = surface_caps.minImageCount + 1; // alway 1 more, which gives the GPU a place to put next image instead of waiting
+    if (surface_caps.maxImageCount > 0 && desired_image_count > surface_caps.maxImageCount) {
+        desired_image_count = surface_caps.maxImageCount;
+    }
+
     image_format = VkFormat {VK_FORMAT_B8G8R8A8_SRGB};
     swapchain_CI = VkSwapchainCreateInfoKHR {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .surface = window_data.surface,
-        .minImageCount = surface_caps.minImageCount,
+        .minImageCount = desired_image_count,
         .imageFormat = image_format,
         .imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR,
         .imageExtent {.width = swapchain_extent.width, .height = swapchain_extent.height},
@@ -55,7 +79,7 @@ VkSwapchainKHR Renderer::create_swapchain(VkSurfaceCapabilitiesKHR surface_caps)
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
         .preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-        .presentMode = VK_PRESENT_MODE_FIFO_KHR // v-synced mode (only mode guaranteed)
+        .presentMode = present_mode
     };
     
     VkSwapchainKHR swapchain {VK_NULL_HANDLE};
