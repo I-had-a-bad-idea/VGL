@@ -88,6 +88,8 @@ void Renderer::create_graphics_pipeline(Shader& shader) {
     };
     VkPipelineRasterizationStateCreateInfo rasterization_state{
         .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+        .cullMode = VK_CULL_MODE_NONE,
+        .frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
         .lineWidth = 1.0f
     };
     VkPipelineMultisampleStateCreateInfo multisample_state{

@@ -6,12 +6,16 @@ struct VSInput {
 
 Sampler2D textures[];
 
+struct ObjectData {
+    float4x4 model;
+    uint32_t selected;
+};
+
 struct ShaderData {
     float4x4 projection;
     float4x4 view;
-    float4x4 model[3];
     float4 lightPos;
-    uint32_t selected;
+    ObjectData objects[4096];
 };
 
 struct VSOutput {
@@ -25,18 +29,35 @@ struct VSOutput {
 };
 
 [shader("vertex")]
-VSOutput main(VSInput input, uniform ShaderData *shaderData, uint instanceIndex : SV_VulkanInstanceID) {
+VSOutput main(
+    VSInput input,
+    uniform ShaderData *shaderData,
+    uint instanceIndex : SV_VulkanInstanceID)
+{
     VSOutput output;
-    float4x4 modelMat = shaderData->model[instanceIndex];
-    output.Normal = mul((float3x3)mul(shaderData->view, modelMat), input.Normal);
+
+    ObjectData obj = shaderData->objects[instanceIndex];
+    float4x4 modelMat = obj.model;
+
+    float4x4 viewModel = mul(shaderData->view, modelMat);
+
+    output.Normal = mul((float3x3)viewModel, input.Normal);
     output.UV = input.UV;
-    output.Pos = mul(shaderData->projection, mul(shaderData->view, mul(modelMat, float4(input.Pos.xyz, 1.0))));
-    output.Factor = (shaderData->selected == instanceIndex ? 3.0f : 1.0f);
+
+    output.Pos = mul(
+        shaderData->projection,
+        mul(viewModel, float4(input.Pos, 1.0))
+    );
+
+    output.Factor = obj.selected != 0 ? 3.0 : 1.0;
     output.InstanceIndex = instanceIndex;
-    // Calculate view vectors required for lighting
-    float4 fragPos = mul(mul(shaderData->view, modelMat), float4(input.Pos.xyz, 1.0));
-    output.LightVec = shaderData->lightPos.xyz - fragPos.xyz;
-    output.ViewVec = -fragPos.xyz;
+
+    float3 fragPos = mul(viewModel, float4(input.Pos, 1.0)).xyz;
+    float3 lightPos = mul(shaderData->view, shaderData->lightPos).xyz;
+
+    output.LightVec = lightPos - fragPos;
+    output.ViewVec = -fragPos;
+
     return output;
 }
 
