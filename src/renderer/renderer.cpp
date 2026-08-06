@@ -292,7 +292,7 @@ Texture Renderer::load_texture(std::string filepath) {
 
 Shader Renderer::load_shader(std::string filepath) {
     Shader shader(filepath, device, slang_session);
-    std::cout << "Creatign graphics pipeline...\n";
+    std::cout << "Creating graphics pipeline for shader...\n";
     create_graphics_pipeline(shader);
 
     return shader;

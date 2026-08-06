@@ -2,7 +2,11 @@
 
 
 void Renderer::create_texture_descriptors() {
-    VkDescriptorBindingFlags desc_variable_flag {VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT};
+    VkDescriptorBindingFlags desc_variable_flag {
+        VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT |
+        VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT | // allow some texture slots to be unbound,
+        VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT // allow updating the descriptor set after it has been bound to a command buffer
+    };
     VkDescriptorSetLayoutBindingFlagsCreateInfo  desc_binding_flags {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO,
         .bindingCount = 1,
@@ -16,6 +20,7 @@ void Renderer::create_texture_descriptors() {
     VkDescriptorSetLayoutCreateInfo desc_layout_text_CI {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
         .pNext = &desc_binding_flags,
+        .flags = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT,
         .bindingCount = 1,
         .pBindings = &desc_layout_binding_text
     };
@@ -27,6 +32,7 @@ void Renderer::create_texture_descriptors() {
     };
     VkDescriptorPoolCreateInfo desc_pool_CI {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+        .flags = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT,
         .maxSets = 1,
         .poolSizeCount = 1,
         .pPoolSizes = &pool_size

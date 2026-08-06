@@ -15,6 +15,7 @@ void Renderer::create_graphics_pipeline(Shader& shader) {
     };
     // Create pipeline layout
     vk_check(vkCreatePipelineLayout(device, &pipeline_layout_CI, nullptr, &shader.graphics_pipeline.layout));
+    std::cout << "Created pipeline layout for shader...\n";
 
     VkVertexInputBindingDescription vertex_binding {
         .binding = 0,

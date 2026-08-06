@@ -23,7 +23,7 @@ void Renderer::create_logical_device() {
 
     // create logical device
 
-    VkDeviceCreateInfo device_CI{
+    VkDeviceCreateInfo device_CI {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext = &enabled_vk_13_features,
         .queueCreateInfoCount = 1,
