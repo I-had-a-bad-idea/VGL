@@ -3,6 +3,23 @@ A vulkan graphics library (may be extended with compute)
 
 A more detailed README will be added once it is in a usable state.
 
+## Overview
+- [VulkanGraphicsLib](#vulkangraphicslib)
+  - [Overview](#overview)
+  - [Including the library](#including-the-library)
+  - [Usage](#usage)
+    - [Axes](#axes)
+    - [Example file](#example-file)
+  - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
+
+
+## Including the library
+
+1. Download the [latest release](https://github.com/I-had-a-bad-idea/VulkanGraphicsLib/releases/latest)
+2. Unpack the zip
+3. Set your compiler to include the `include/` directory
+4. Link the `VulkanGraphicsLib`
+5. [Use](#usage) it for your project
 
 ## Usage
 
