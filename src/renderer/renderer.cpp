@@ -178,23 +178,25 @@ void Renderer::render_scene(const Scene& scene) {
     // std::cout << "Rendering scene with " << scene.objects.size() << " objects...\n";
     // For each shader do the pipeline
     // std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
+
     for (const auto& [shader, objects] : scene.objects_by_shader) {
         // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
         VkDeviceSize v_offset {0};
         vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.layout, 0, 1, &descriptor_set_tex, 0, nullptr);
         
+        PushConstants pc {
+            .shader_data_addrress = shader_data_buffers[frame_index].deviceAddress,
+            .time = static_cast<float>(SDL_GetTicks()) / 1000.0f
+        };
+        vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pc);
+
         for (auto* obj : objects) {
             // bind vertext/index buffers
             vkCmdBindVertexBuffers(cb, 0, 1, &obj->mesh->v_buffer, &v_offset);
             vkCmdBindIndexBuffer(cb, obj->mesh->v_buffer, obj->mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
             
-            PushConstants pc {
-                .shader_data_addrress = shader_data_buffers[frame_index].deviceAddress,
-                .time = static_cast<float>(SDL_GetTicks()) / 1000.0f
-            };
-
-            vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pc);
+            
             // Finally actually draw
             vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
         }
