@@ -180,7 +180,8 @@ void Renderer::render_scene(const Scene& scene) {
     // For each shader do the pipeline
     // std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
     uint32_t object_index = 0;
-    for (const auto& [shader, objects] : scene.objects_by_shader) {
+    for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
+        // std::cout << "There are " << meshes.size() << " unique meshes in the scene\n";
         // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
         VkDeviceSize v_offset {0};
@@ -192,15 +193,21 @@ void Renderer::render_scene(const Scene& scene) {
         };
         vkCmdPushConstants(cb, shader->graphics_pipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pc);
 
-        for (auto* obj : objects) {
-            // bind vertext/index buffers
-            vkCmdBindVertexBuffers(cb, 0, 1, &obj->mesh->v_buffer, &v_offset);
-            vkCmdBindIndexBuffer(cb, obj->mesh->v_buffer, obj->mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
+        for (const auto& [mesh, objects] : meshes) {
+            // bind vertext/index buffers (bind each mesh only once)
+            vkCmdBindVertexBuffers(cb, 0, 1, &mesh->v_buffer, &v_offset);
+            vkCmdBindIndexBuffer(cb, mesh->v_buffer, mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
             
-            
+            uint32_t object_count = objects.size(); 
             // Finally actually draw
-            vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, object_index); // 3rd argument, how many of the thing we want to draw
-            object_index++; // so that shader knows which one it is
+            vkCmdDrawIndexed(
+                cb,
+                mesh->index_count,
+                object_count, // 3rd argument, how many of the thing we want to draw
+                0,
+                0,
+                object_index); 
+            object_index += object_count; // so that shader knows which one it is
         }
     }
     vkCmdEndRendering(cb);

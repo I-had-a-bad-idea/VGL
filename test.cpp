@@ -35,7 +35,9 @@ int main() {
     scene.add_object_to_scene(&monkey_right);
     scene.add_object_to_scene(&monkey_left);
     scene.add_object_to_scene(&monkey_up);
-    scene.add_object_to_scene(&monkey_down);
+    for (int i = 0; i < 100; i++) {
+        scene.add_object_to_scene(&monkey_down);
+    }
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() }; // this is only FPS metrics related stuff
