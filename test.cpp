@@ -63,6 +63,9 @@ int main() {
         monkey_up.rotation.x += elapsed_time;
         monkey_down.rotation.x -= elapsed_time;
 
+        //rotate camera
+        scene.cam_rot.z += elapsed_time;
+
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close
             if (event.type == SDL_EVENT_QUIT) {
