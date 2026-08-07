@@ -17,8 +17,8 @@ A more detailed README will be added once it is in a usable state.
 
 1. Download the [latest release](https://github.com/I-had-a-bad-idea/VulkanGraphicsLib/releases/latest)
 2. Unpack the zip
-3. Set your compiler to include the `include/` directory
-4. Link the `VulkanGraphicsLib`
+3. Set your compiler to include the `include/` directory (`-Ipath/to/folder/include`)
+4. Link the `VulkanGraphicsLib` (`-lVulkanGraphicsLib`)
 5. [Use](#usage) it for your project
 
 ## Usage

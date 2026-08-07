@@ -58,7 +58,7 @@ ${TEST_TARGET}: $(TEST_OBJECTS) $(LIB_TARGET)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	del /Q $(subst /,\,$(CPP_OBJECTS)) $(subst /,\,$(KTX_OBJECTS)) test.exe 2>nul || exit 0
+	del /Q $(subst /,\,$(CPP_OBJECTS)) $(subst /,\,$(KTX_OBJECTS)) ${LIB_TARGET} ${TEST_TARGET} 2>nul || exit 0
 
 compile-and-run-test: ${TEST_TARGET}
 	./${TEST_TARGET}
