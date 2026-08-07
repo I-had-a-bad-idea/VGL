@@ -3,6 +3,9 @@ CXX = g++
 
 VULKAN_SDK = C:/VulkanSDK/1.4.357.0
 
+LIB_TARGET = VulkanGraphicsLib.a
+TEST_TARGET = test.exe
+
 CFLAGS = \
 -Iexternal/ktx/include \
 -Iexternal/ktx/other_include \
@@ -23,9 +26,10 @@ LDFLAGS = \
 -lSDL3 \
 -lslang
 
-CPP_SOURCES := \
-$(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp) \
-test.cpp
+CPP_SOURCES := $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp)
+
+TEST_SOURCES = test.cpp
+TEST_OBJECTS = ${TEST_SOURCES:.cpp=.o}
 
 KTX_SOURCES := \
 external/ktx/lib/texture.c \
@@ -39,10 +43,13 @@ external/ktx/lib/vkloader.c
 CPP_OBJECTS := $(CPP_SOURCES:.cpp=.o)
 KTX_OBJECTS := $(KTX_SOURCES:.c=.o)
 
-all: test
+all: ${LIB_TARGET}
 
-test: $(CPP_OBJECTS) $(KTX_OBJECTS)
-	$(CXX) $^ $(LDFLAGS) -o $@
+${LIB_TARGET}: ${CPP_OBJECTS} ${KTX_OBJECTS}
+	ar rcs $@ $^
+
+${TEST_TARGET}: $(TEST_OBJECTS) $(LIB_TARGET)
+	$(CXX) $(TEST_OBJECTS) $(LIB_TARGET) $(LDFLAGS) -o $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -53,7 +60,8 @@ test: $(CPP_OBJECTS) $(KTX_OBJECTS)
 clean:
 	del /Q $(subst /,\,$(CPP_OBJECTS)) $(subst /,\,$(KTX_OBJECTS)) test.exe 2>nul || exit 0
 
-compile-and-run-test: test
-	./test
+compile-and-run-test: ${TEST_TARGET}
+	./${TEST_TARGET}
 
-.PHONY: all clean compile-and-run-test
+
+.PHONY: all clean ${LIB_TARGET}
