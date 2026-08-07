@@ -8,7 +8,7 @@
 
 int main() {
     std::cout << "Starting...\n";
-    Renderer renderer("Test", 1280, 720); // Create a renderer with window dimensions
+    Renderer renderer("Test", 1280, 720, true); // Create a renderer with window dimensions + capture mouse
     Scene scene; // A scene is used to group objects
     
     // Load meshes, textures and shaders
@@ -37,6 +37,12 @@ int main() {
     scene.add_object_to_scene(&monkey_up);
     scene.add_object_to_scene(&monkey_down);
 
+    glm::vec3 camera_velocity(0.0f);
+    float move_speed = 5.0f;
+    float mouse_sensitivity = 0.0025f;
+    float yaw = 0.0f;   // left/right
+    float pitch = 0.0f; // up/down
+
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() }; // this is only FPS metrics related stuff
     uint64_t fps_update_time{ last_time };
@@ -63,8 +69,43 @@ int main() {
         monkey_up.rotation.x += elapsed_time;
         monkey_down.rotation.x -= elapsed_time;
 
-        //rotate camera
-        scene.cam_rot.z += elapsed_time;
+        // Input
+        const bool* keys = SDL_GetKeyboardState(nullptr);
+
+        camera_velocity = glm::vec3(0.0f);
+        glm::vec3 forward;
+        forward.x = cos(pitch) * sin(yaw);
+        forward.y = sin(pitch);
+        forward.z = cos(pitch) * cos(yaw);
+
+        glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+        
+        // Forward / backward
+        if (keys[SDL_SCANCODE_W])
+            camera_velocity.z -= 1.0f;
+
+        if (keys[SDL_SCANCODE_S])
+            camera_velocity.z += 1.0f;
+
+        // Left / right
+        if (keys[SDL_SCANCODE_A])
+            camera_velocity.x += 1.0f;
+
+        if (keys[SDL_SCANCODE_D])
+            camera_velocity.x -= 1.0f;
+
+        // Normalize so diagonal movement is not faster
+        if (glm::length(camera_velocity) > 0.0f)
+            camera_velocity = glm::normalize(camera_velocity);
+    
+
+        // Apply movement
+        scene.cam_pos += forward * camera_velocity.z * move_speed * elapsed_time;
+        scene.cam_pos += right * camera_velocity.x * move_speed * elapsed_time;
+
+        if (keys[SDL_SCANCODE_ESCAPE]) {
+            quit = true;
+        }
 
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close
@@ -73,9 +114,27 @@ int main() {
                 break;
             }
 
-            // Zooming with the mouse wheel (add your movement here [currently rotation is not supported])
+            if (event.type == SDL_EVENT_MOUSE_MOTION) {
+                float mouse_x = (float)event.motion.xrel;
+                float mouse_y = (float)event.motion.yrel;
+
+                yaw -= mouse_x * mouse_sensitivity;
+                pitch += mouse_y * mouse_sensitivity;
+
+                // Prevent looking too far up/down
+                pitch = glm::clamp(
+                    pitch,
+                    -glm::radians(89.0f),
+                    glm::radians(89.0f)
+                );
+
+                scene.cam_rot.y = yaw;
+                scene.cam_rot.x = pitch;
+            }
+
+            // Zooming with the mouse wheel 
             if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-                scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 100.0f;
+                scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 1000.0f;
             }
         }
     }

@@ -7,5 +7,8 @@ void Scene::add_object_to_scene(Object* object) {
 }
 
 glm::mat4 Scene::view_matrix() const {
-    return model_matrix_from_pos_and_rot(cam_pos, cam_rot);
+    glm::mat4 camera_transform =
+        model_matrix_from_pos_and_rot(cam_pos, cam_rot);
+
+    return glm::inverse(camera_transform);
 }
