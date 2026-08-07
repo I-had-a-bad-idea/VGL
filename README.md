@@ -14,7 +14,7 @@ A more detailed README will be added once it is in a usable state.
 
 
 ## Including the library
-
+> Doesnt works as of now (still figuring out how to best package the dependencies)
 1. Download the [latest release](https://github.com/I-had-a-bad-idea/VulkanGraphicsLib/releases/latest)
 2. Unpack the zip
 3. Set your compiler to include the `include/` directory (`-Ipath/to/folder/include`)
