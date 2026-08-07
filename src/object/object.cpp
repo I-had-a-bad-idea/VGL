@@ -1,7 +1,7 @@
 #include "object.h"
 
-Object::Object(Mesh* mesh, Material* material)
-    : mesh(mesh), material(material), position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 0.0f), selected(0) {}
+Object::Object(Mesh* mesh, Material* material, glm::vec3 position, glm::vec3 rotation)
+    : mesh(mesh), material(material), position(position), rotation(rotation), selected(0) {}
 
 glm::mat4 Object::model_matrix() const {
     glm::mat4 model = glm::mat4(1.0f);

@@ -8,6 +8,7 @@ Sampler2D textures[];
 
 struct ObjectData {
     float4x4 model;
+    uint32_t texture_index;
     uint32_t selected;
 };
 
@@ -31,6 +32,7 @@ struct VSOutput {
     float3 LightVec;
     float3 ViewVec;
     uint32_t InstanceIndex;
+    uint32_t TextureIndex;
 };
 
 [shader("vertex")]
@@ -44,6 +46,7 @@ VSOutput main(
 
     ObjectData obj = shaderData->objects[instanceIndex];
     float4x4 modelMat = obj.model;
+    output.TextureIndex = obj.texture_index;
 
     float4x4 viewModel = mul(shaderData->view, modelMat);
 
@@ -79,6 +82,6 @@ float4 main(VSOutput input) {
 
     float3 diffuse = max(dot(N, L), 0.0025);
     // Sample from texture
-    float3 color = textures[NonUniformResourceIndex(input.InstanceIndex)].Sample(input.UV).rgb * input.Factor;
+    float3 color = textures[NonUniformResourceIndex(input.TextureIndex)].Sample(input.UV).rgb * input.Factor;
     return float4((ambient + diffuse) * color.rgb, 1.0);
 }

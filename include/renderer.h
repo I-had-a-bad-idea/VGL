@@ -69,6 +69,7 @@ private:
     };
     struct ObjectData {
         glm::mat4 model;
+        uint32_t texture_index;
         uint32_t selected;
     };
 

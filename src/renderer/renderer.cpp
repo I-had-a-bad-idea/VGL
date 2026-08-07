@@ -88,6 +88,7 @@ void Renderer::render_scene(const Scene& scene) {
         
         const Object* object = scene.objects[i];
         shader_data.objects[i].model = object->model_matrix();
+        shader_data.objects[i].texture_index = object->material->albedo->descriptor_index;
         shader_data.objects[i].selected = object->selected;
     }
 
@@ -178,7 +179,7 @@ void Renderer::render_scene(const Scene& scene) {
     // std::cout << "Rendering scene with " << scene.objects.size() << " objects...\n";
     // For each shader do the pipeline
     // std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
-
+    uint32_t object_index = 0;
     for (const auto& [shader, objects] : scene.objects_by_shader) {
         // bind resources (graphics pipeline, descriptor set)
         vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, shader->graphics_pipeline.pipeline);
@@ -198,7 +199,8 @@ void Renderer::render_scene(const Scene& scene) {
             
             
             // Finally actually draw
-            vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, 0); // 3rd argument, how many of the thing we want to draw
+            vkCmdDrawIndexed(cb, obj->mesh->index_count, 1, 0, 0, object_index); // 3rd argument, how many of the thing we want to draw
+            object_index++; // so that shader knows which one it is
         }
     }
     vkCmdEndRendering(cb);

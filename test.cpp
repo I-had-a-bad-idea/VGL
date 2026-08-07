@@ -20,11 +20,20 @@ int main() {
     Material gravel_material(&gravel_texture, &shader);
 
     // Create a monkey object
-    Object monkey(&monkey_mesh, &gravel_material);
+    Object monkey(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_right(&monkey_mesh, &gravel_material, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_left(&monkey_mesh, &gravel_material, glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_up(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_down(&monkey_mesh, &gravel_material, glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
 
     std::cout << "Adding object(s) to scene...\n";
     // Add objects to scene
     scene.add_object_to_scene(&monkey);
+    scene.add_object_to_scene(&monkey_right);
+    scene.add_object_to_scene(&monkey_left);
+    scene.add_object_to_scene(&monkey_up);
+    scene.add_object_to_scene(&monkey_down);
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() };
@@ -46,7 +55,11 @@ int main() {
             fps_update_time = now;
         }
 
-        monkey.rotation.y += elapsed_time;
+        monkey.rotation.z += elapsed_time;
+        monkey_right.rotation.y += elapsed_time;
+        monkey_left.rotation.y -= elapsed_time;
+        monkey_up.rotation.x += elapsed_time;
+        monkey_down.rotation.x -= elapsed_time;
 
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close
