@@ -1,3 +1,5 @@
+
+// Includes from the VulkanGraphicsLib
 #include "renderer.h"
 #include "object.h"
 
@@ -6,21 +8,21 @@
 
 int main() {
     std::cout << "Starting...\n";
-    Renderer renderer("Test", 1280, 720);
-    Scene scene;
+    Renderer renderer("Test", 1280, 720); // Create a renderer with window dimensions
+    Scene scene; // A scene is used to group objects
     
     // Load meshes, textures and shaders
     std::cout << "Loading resources...\n";
-    Mesh monkey_mesh = renderer.load_mesh("assets/monkey.obj");
-    Texture gravel_texture = renderer.load_texture("assets/Textures/Gravel.ktx");
+    Mesh monkey_mesh = renderer.load_mesh("assets/monkey.obj"); // Currently only .obj is supported
+    Texture gravel_texture = renderer.load_texture("assets/Textures/Gravel.ktx"); // Currently only .ktx (as it is a format the GPU likes)
     std::cout << "Loading shader...\n";
-    Shader shader = renderer.load_shader("assets/shader.slang");
+    Shader shader = renderer.load_shader("assets/shader.slang"); // The slang compiler is included in the library and shaders will be compiled when loaded
     std::cout << "Creating material...\n";
     // Create a material for gravel
-    Material gravel_material(&gravel_texture, &shader);
+    Material gravel_material(&gravel_texture, &shader); // Create a material from a texture and a shader
 
-    // Create a monkey object
-    Object monkey(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    // Create object(s) (mesh, material, position, rotation)
+    Object monkey(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)); 
     Object monkey_right(&monkey_mesh, &gravel_material, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     Object monkey_left(&monkey_mesh, &gravel_material, glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     Object monkey_up(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -36,7 +38,7 @@ int main() {
     scene.add_object_to_scene(&monkey_down);
 
     std::cout << "Starting rendering..." << std::endl;
-    uint64_t last_time{ SDL_GetTicks() };
+    uint64_t last_time{ SDL_GetTicks() }; // this is only FPS metrics related stuff
     uint64_t fps_update_time{ last_time };
     uint32_t frame_count{ 0 };
     bool quit{ false };
@@ -47,14 +49,14 @@ int main() {
 
         renderer.render_scene(scene); // Render the scene
         ++frame_count;
-
+        // More FPS stuff
         if (now - fps_update_time >= 1000) {
             float fps{ static_cast<float>(frame_count) / ((now - fps_update_time) / 1000.0f) };
             std::cout << "FPS: " << fps << '\n';
             frame_count = 0;
             fps_update_time = now;
         }
-
+        // Update your scene (e.g. rotate the monkeys)
         monkey.rotation.z += elapsed_time;
         monkey_right.rotation.y += elapsed_time;
         monkey_left.rotation.y -= elapsed_time;
@@ -68,21 +70,21 @@ int main() {
                 break;
             }
 
-            // Zooming with the mouse wheel
+            // Zooming with the mouse wheel (add your movement here [currently rotation is not supported])
             if (event.type == SDL_EVENT_MOUSE_WHEEL) {
                 scene.cam_pos.z += (float)event.wheel.y * elapsed_time * 100.0f;
             }
         }
     }
 
-    // Destroy resources
+    // Destroy resources (you are fully responsible for the objects)
     renderer.destroy_mesh(monkey_mesh);
     renderer.destroy_texture(gravel_texture);
     renderer.destroy_shader(shader);
 
     renderer.destroy();
 
-
+    // Alternativly let the OS do this (not nice or clean)
 
     std::cout << "Ending...\n";
     return 0;
