@@ -34,7 +34,7 @@ class Scene {
         std::vector<Object*> objects;
         glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
 
-        std::unordered_map<Shader*, std::vector<Object*>> objects_by_shader;
+        std::unordered_map<Shader*, std::unordered_map<Mesh*, std::vector<Object*>>> objects_by_mesh_by_shader;
 
         void add_object_to_scene(Object* object);
 
