@@ -5,8 +5,18 @@ A more detailed README will be added once it is in a usable state.
 
 
 ## Usage
-> See the `test.cpp` file
 
+### Axes
+> Beware once the camera is rotated (currently not supported) this will change
+
+- -z is forward
+- +x is right
+- +y is up (as it should be)
+
+
+### Example file
+
+> See the `test.cpp` file
 
 A minimal usage file could look like this
 ```cpp
@@ -49,7 +59,7 @@ int main() {
         last_time = now;
 
         renderer.render_scene(scene); // Render the scene
-        
+
         // Update your scene (e.g. rotate the monkeys)
         monkey.rotation.z += elapsed_time;
 
