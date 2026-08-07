@@ -12,7 +12,7 @@ inline void Renderer::vk_check_swapchain(VkResult result) {
 	}
 }
 
-Renderer::Renderer(std::string name, int w, int h) {
+Renderer::Renderer(std::string name, int w, int h, bool capture_mouse) {
     std::cout << "Initializing up SDL...\n";
     init_sdl();
     std::cout << "Initializing up Volk...\n";
@@ -40,7 +40,7 @@ Renderer::Renderer(std::string name, int w, int h) {
     setup_vma();
 
     std::cout << "Creating window...\n";
-    window = create_window(name, w, h);
+    window = create_window(name, w, h, capture_mouse);
     window_data = create_vulkan_surface_for_window();
     surface_caps = get_surface_properties();
 

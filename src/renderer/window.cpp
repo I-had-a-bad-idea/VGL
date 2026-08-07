@@ -1,6 +1,6 @@
 #include "VGL/renderer.h"
 
-SDL_Window* Renderer::create_window(std::string name, int w, int h) {
+SDL_Window* Renderer::create_window(std::string name, int w, int h, bool capture_mouse) {
     if (name.length() == 0) {
         name = "VulkanGraphicsLib"; // Name fallback
     }
@@ -14,6 +14,10 @@ SDL_Window* Renderer::create_window(std::string name, int w, int h) {
 
     SDL_Window* window = SDL_CreateWindow(name.c_str(), w, h, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
     assert(window);
+
+    if (capture_mouse) {
+        SDL_SetWindowRelativeMouseMode(window, capture_mouse);
+    }
 
     return window;
 }
