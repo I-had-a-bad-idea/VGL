@@ -22,7 +22,7 @@ LDFLAGS = \
 -lSDL3 \
 -lslang
 
-CPP_SOURCES := $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp)
+CPP_SOURCES := $(wildcard src/*.cpp src/object/*.cpp src/renderer/*.cpp src/math/*.cpp)
 
 TEST_SOURCES = test.cpp
 TEST_OBJECTS = ${TEST_SOURCES:.cpp=.o}
