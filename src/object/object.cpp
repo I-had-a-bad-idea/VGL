@@ -1,4 +1,4 @@
-#include "object.h"
+#include "VGL/object.h"
 
 Object::Object(Mesh* mesh, Material* material, glm::vec3 position, glm::vec3 rotation)
     : mesh(mesh), material(material), position(position), rotation(rotation), selected(0) {}

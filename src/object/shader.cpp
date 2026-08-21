@@ -1,7 +1,13 @@
-#include "object.h"
+#include "VGL/object.h"
 
 
 std::string load_shader_source(const std::string& filepath) {
+    // if no exist throw error
+    if (!std::filesystem::exists(filepath)) {
+        std::cerr << "File does not exist: " << filepath << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
 // Open the file using ifstream
     std::ifstream file(filepath);
 
@@ -9,6 +15,7 @@ std::string load_shader_source(const std::string& filepath) {
     if (!file.is_open()) {
         // print error message and return
         std::cerr << "Failed to open file: " << filepath << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     // Read the file line by line into a string

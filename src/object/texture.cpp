@@ -1,7 +1,12 @@
-#include "object.h"
+#include "VGL/object.h"
 
 
 Texture::Texture(std::string path) {
+    // if no exist throw error
+    if (!std::filesystem::exists(path)) {
+        std::cerr << "File does not exist: " << path << std::endl;
+        exit(EXIT_FAILURE);
+    }
     ktxTexture_CreateFromNamedFile(path.c_str(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &ktx_texture); // load texture from file
 }
 

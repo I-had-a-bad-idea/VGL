@@ -1,4 +1,4 @@
-#include "object.h"
+#include "VGL/object.h"
 
 
 Material::Material(Texture* texture, Shader* shader)

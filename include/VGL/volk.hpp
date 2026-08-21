@@ -1,0 +1,13 @@
+#pragma once
+
+#include <volk/volk.h>
+
+#include "VGL/vk_check.hpp"
+
+static inline void init_volk() {
+    vk_check(volkInitialize());
+}
+
+static inline void volk_load_instance(VkInstance instance) {
+    volkLoadInstance(instance);
+}

@@ -1,9 +1,15 @@
-#include "object.h"
+#include "VGL/object.h"
 
 Mesh::Mesh(std::string path) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
+
+    // if no exist throw error
+    if (!std::filesystem::exists(path)) {
+        std::cerr << "File does not exist: " << path << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     vk_check(tinyobj::LoadObj(&attrib, &shapes, &materials, nullptr, nullptr, path.c_str())); // load file
     

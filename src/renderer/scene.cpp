@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "VGL/renderer.h"
 
 
 void Scene::add_object_to_scene(Object* object) {

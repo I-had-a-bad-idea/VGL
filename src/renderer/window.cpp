@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "VGL/renderer.h"
 
 SDL_Window* Renderer::create_window(std::string name, int w, int h) {
     if (name.length() == 0) {

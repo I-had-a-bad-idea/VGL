@@ -1,7 +1,7 @@
 
 // Includes from the VulkanGraphicsLib
-#include "renderer.h"
-#include "object.h"
+#include <VGL/renderer.h>
+#include <VGL/object.h>
 
 #include <iostream>
 
