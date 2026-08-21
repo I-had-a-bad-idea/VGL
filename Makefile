@@ -3,7 +3,7 @@ CXX = g++
 
 VULKAN_SDK = C:/VulkanSDK/1.4.357.0
 
-LIB_TARGET = VulkanGraphicsLib.a
+LIB_TARGET = VGL.a
 TEST_TARGET = test.exe
 
 CFLAGS = \

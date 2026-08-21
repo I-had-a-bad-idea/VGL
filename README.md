@@ -1,10 +1,10 @@
-# VulkanGraphicsLib
+# VGL
 A vulkan graphics library (may be extended with compute)
 
 A more detailed README will be added once it is in a usable state.
 
 ## Overview
-- [VulkanGraphicsLib](#vulkangraphicslib)
+- [VGL](#vgl)
   - [Overview](#overview)
   - [Including the library](#including-the-library)
   - [Usage](#usage)
@@ -15,11 +15,12 @@ A more detailed README will be added once it is in a usable state.
 
 ## Including the library
 > Doesnt works as of now (still figuring out how to best package the dependencies)
-1. Download the [latest release](https://github.com/I-had-a-bad-idea/VulkanGraphicsLib/releases/latest)
+1. Download the [latest release](https://github.com/I-had-a-bad-idea/VGL/releases/latest)
 2. Unpack the zip
 3. Set your compiler to include the `include/` directory (`-Ipath/to/folder/include`)
-4. Link the `VulkanGraphicsLib` (`-lVulkanGraphicsLib`)
-5. [Use](#usage) it for your project
+4. You also have to include the `include/ktx/include` directory (sorry, cant make it work with only one)
+5. Link the `VGL` (`-Lpath/to/VGL \` & `-l:VGL.a`)
+6. [Use](#usage) it for your project
 
 ## Usage
 
@@ -38,9 +39,9 @@ A more detailed README will be added once it is in a usable state.
 A minimal usage file could look like this
 ```cpp
 
-// Includes from the VulkanGraphicsLib
-#include "renderer.h"
-#include "object.h"
+// Includes from the VGL
+#include <VGL/renderer.h>
+#include <VGL/object.h>
 
 #include <iostream>
 
@@ -62,13 +63,24 @@ int main() {
 
     // Create object(s) (mesh, material, position, rotation)
     Object monkey(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)); 
+    Object monkey_right(&monkey_mesh, &gravel_material, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_left(&monkey_mesh, &gravel_material, glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_up(&monkey_mesh, &gravel_material, glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    Object monkey_down(&monkey_mesh, &gravel_material, glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
 
     std::cout << "Adding object(s) to scene...\n";
     // Add objects to scene
     scene.add_object_to_scene(&monkey);
+    scene.add_object_to_scene(&monkey_right);
+    scene.add_object_to_scene(&monkey_left);
+    scene.add_object_to_scene(&monkey_up);
+    scene.add_object_to_scene(&monkey_down);
 
     std::cout << "Starting rendering..." << std::endl;
     uint64_t last_time{ SDL_GetTicks() }; // this is only FPS metrics related stuff
+    uint64_t fps_update_time{ last_time };
+    uint32_t frame_count{ 0 };
     bool quit{ false };
     while (!quit) {
         uint64_t now = SDL_GetTicks();
@@ -76,9 +88,20 @@ int main() {
         last_time = now;
 
         renderer.render_scene(scene); // Render the scene
-
+        ++frame_count;
+        // More FPS stuff
+        if (now - fps_update_time >= 1000) {
+            float fps{ static_cast<float>(frame_count) / ((now - fps_update_time) / 1000.0f) };
+            std::cout << "FPS: " << fps << '\n';
+            frame_count = 0;
+            fps_update_time = now;
+        }
         // Update your scene (e.g. rotate the monkeys)
         monkey.rotation.z += elapsed_time;
+        monkey_right.rotation.y += elapsed_time;
+        monkey_left.rotation.y -= elapsed_time;
+        monkey_up.rotation.x += elapsed_time;
+        monkey_down.rotation.x -= elapsed_time;
 
         for (SDL_Event event; SDL_PollEvent(&event);) {
             // Exit loop if the application is about to close
@@ -107,7 +130,6 @@ int main() {
     return 0;
 }
 
-}
 ```
 
 
