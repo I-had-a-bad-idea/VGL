@@ -8,6 +8,7 @@ A vulkan graphics library (may be extended with compute in the future)
   - [Usage](#usage)
     - [Axes](#axes)
     - [Example file](#example-file)
+  - [Near and far plane](#near-and-far-plane)
   - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
 
 
@@ -200,6 +201,9 @@ int main() {
 }
 
 ```
+
+## Near and far plane
+You can configure the near and far plane of the camera in the `Scene` class. The default values are 0.1f for the near plane and 32.0f for the far plane. You can change these values by setting the `near_plane` and `far_plane` members of the `Scene` class.
 
 
 ## Licenses for textures under asses/Textures

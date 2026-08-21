@@ -36,6 +36,9 @@ class Scene {
         glm::vec3 cam_rot {0.0f, 0.0f, 0.0f};
         glm::quat cam_orientation {1.0f, 0.0f, 0.0f, 0.0f};
 
+        float near_plane {0.1f};
+        float far_plane {32.0f};
+
         std::unordered_map<Shader*, std::unordered_map<Mesh*, std::vector<Object*>>> objects_by_mesh_by_shader;
 
         void add_object_to_scene(Object* object);
