@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "VGL/renderer.h"
 
 void Renderer::create_sync_objects() {
     // Creates fences and semaphores

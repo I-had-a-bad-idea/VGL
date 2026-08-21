@@ -2,7 +2,7 @@
 
 #include <volk/volk.h>
 
-#include "vk_check.hpp"
+#include "VGL/vk_check.hpp"
 
 static inline void init_volk() {
     vk_check(volkInitialize());

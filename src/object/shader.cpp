@@ -1,4 +1,4 @@
-#include "object.h"
+#include "VGL/object.h"
 
 
 std::string load_shader_source(const std::string& filepath) {

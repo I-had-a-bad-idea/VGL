@@ -1,4 +1,4 @@
-#include "object.h"
+#include "VGL/object.h"
 
 Mesh::Mesh(std::string path) {
     tinyobj::attrib_t attrib;

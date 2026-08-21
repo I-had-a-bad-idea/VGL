@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-#include "vk_check.hpp"
+#include "VGL/vk_check.hpp"
 
 struct Vertex {
     glm::vec3 pos;

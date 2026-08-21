@@ -18,10 +18,10 @@
 #include <iostream>
 #include <array>
 
-#include "vk_check.hpp"
-#include "sdl.hpp"
-#include "volk.hpp"
-#include "object.h"
+#include "VGL/vk_check.hpp"
+#include "VGL/sdl.hpp"
+#include "VGL/volk.hpp"
+#include "VGL/object.h"
 
 
 struct PushConstants {

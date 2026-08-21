@@ -1,4 +1,4 @@
-#include "object.h"
+#include "VGL/object.h"
 
 
 Texture::Texture(std::string path) {

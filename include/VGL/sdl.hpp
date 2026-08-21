@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
 
-#include "vk_check.hpp"
+#include "VGL/vk_check.hpp"
 
 static inline void init_sdl() {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
