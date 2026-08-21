@@ -31,7 +31,7 @@ Mesh::Mesh(std::string path) {
 
 void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
     v_buffer_size = VkDeviceSize {sizeof(Vertex) * vertices.size()};
-    VkDeviceSize i_buffer_size {sizeof(uint16_t) * indices.size()};
+    VkDeviceSize i_buffer_size {sizeof(uint32_t) * indices.size()};
 
     VkBufferCreateInfo buffer_CI {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,

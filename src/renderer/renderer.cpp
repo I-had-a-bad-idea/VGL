@@ -197,7 +197,7 @@ void Renderer::render_scene(const Scene& scene) {
         for (const auto& [mesh, objects] : meshes) {
             // bind vertext/index buffers (bind each mesh only once)
             vkCmdBindVertexBuffers(cb, 0, 1, &mesh->v_buffer, &v_offset);
-            vkCmdBindIndexBuffer(cb, mesh->v_buffer, mesh->v_buffer_size, VK_INDEX_TYPE_UINT16);
+            vkCmdBindIndexBuffer(cb, mesh->v_buffer, mesh->v_buffer_size, VK_INDEX_TYPE_UINT32);
             
             uint32_t object_count = objects.size(); 
             // Finally actually draw
