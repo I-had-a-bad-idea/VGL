@@ -22,7 +22,7 @@
 #include "VGL/sdl.hpp"
 #include "VGL/volk.hpp"
 #include "VGL/object.h"
-
+#include "VGL/math.h"
 
 struct PushConstants {
     VkDeviceAddress shader_data_addrress;
@@ -33,11 +33,14 @@ class Scene {
     public:
         std::vector<Object*> objects;
         glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
+        glm::vec3 cam_rot {0.0f, 0.0f, 0.0f};
+        glm::quat cam_orientation {1.0f, 0.0f, 0.0f, 0.0f};
 
         std::unordered_map<Shader*, std::unordered_map<Mesh*, std::vector<Object*>>> objects_by_mesh_by_shader;
 
         void add_object_to_scene(Object* object);
 
+        glm::mat4 view_matrix() const; 
 };
 
 class Renderer {
@@ -46,7 +49,7 @@ public:
     static constexpr uint32_t max_textures = 4096;
     static constexpr uint32_t max_objects = 4096;
 
-    Renderer(std::string name, int w, int h);
+    Renderer(std::string name, int w, int h, bool capture_mouse);
 
     Mesh load_mesh(std::string filepath);
     Texture load_texture(std::string filepath);
@@ -125,7 +128,7 @@ private:
     VkQueue get_device_queue(uint32_t queue_family);
 
     // Window / Surface
-    SDL_Window* create_window(std::string name, int w, int h);
+    SDL_Window* create_window(std::string name, int w, int h, bool capture_mouse);
     WindowData create_vulkan_surface_for_window();
     VkSurfaceCapabilitiesKHR get_surface_properties();
     VkSwapchainKHR create_swapchain(VkSurfaceCapabilitiesKHR surface_caps);

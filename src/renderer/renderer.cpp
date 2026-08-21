@@ -12,7 +12,7 @@ inline void Renderer::vk_check_swapchain(VkResult result) {
 	}
 }
 
-Renderer::Renderer(std::string name, int w, int h) {
+Renderer::Renderer(std::string name, int w, int h, bool capture_mouse) {
     std::cout << "Initializing up SDL...\n";
     init_sdl();
     std::cout << "Initializing up Volk...\n";
@@ -40,7 +40,7 @@ Renderer::Renderer(std::string name, int w, int h) {
     setup_vma();
 
     std::cout << "Creating window...\n";
-    window = create_window(name, w, h);
+    window = create_window(name, w, h, capture_mouse);
     window_data = create_vulkan_surface_for_window();
     surface_caps = get_surface_properties();
 
@@ -79,7 +79,8 @@ void Renderer::render_scene(const Scene& scene) {
     // std::cout << "Waited for fence and qcquired next swapchain image\n";
     // Update shader data
     shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, 0.1f, 32.0f);    
-    shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
+    // shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
+    shader_data.view = scene.view_matrix();
     for (size_t i = 0; i < scene.objects.size(); i++) {
         if (i >= max_objects) {
             std::cerr << "Warning: Maximum number of objects in scene exceeded. Max: " << max_objects << ", Current: " << scene.objects.size() << std::endl;
