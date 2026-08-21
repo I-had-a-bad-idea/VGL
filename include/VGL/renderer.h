@@ -55,6 +55,7 @@ public:
     Renderer(std::string name, int w, int h, bool capture_mouse);
 
     Mesh load_mesh(std::string filepath);
+    Mesh load_mesh(MeshData mesh_data);
     Texture load_texture(std::string filepath);
     Shader load_shader(std::string filepath);
 

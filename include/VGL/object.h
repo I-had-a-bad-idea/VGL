@@ -27,9 +27,18 @@ struct Vertex {
     glm::vec2 uv;
 };
 
+class MeshData {
+    public:
+        std::vector<Vertex> vertices {};
+        std::vector<uint32_t> indices {};
+};
+
 class Mesh {
     public:
         Mesh(std::string filepath);
+        Mesh(MeshData mesh_data);
+
+        MeshData data;
 
         VkBuffer v_buffer {VK_NULL_HANDLE};
         VkDeviceSize v_buffer_size;
@@ -40,8 +49,6 @@ class Mesh {
         void destroy(VmaAllocator allocator);
 
     private:
-        std::vector<Vertex> vertices {};
-        std::vector<uint32_t> indices {};
 
         VmaAllocation v_buffer_allocation{ VK_NULL_HANDLE };
         

@@ -287,6 +287,12 @@ Mesh Renderer::load_mesh(std::string filepath) {
     return mesh;
 }
 
+Mesh Renderer::load_mesh(MeshData mesh_data) {
+    Mesh mesh(mesh_data);
+    mesh.load_mesh_into_buffer(allocator);
+    return mesh;
+}
+
 Texture Renderer::load_texture(std::string filepath) {
     Texture texture(filepath);
     texture.load_image_into_buffer(physical_devices[device_index], device, command_pool, graphics_queue, allocator);
