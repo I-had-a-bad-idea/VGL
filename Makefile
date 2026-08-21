@@ -17,7 +17,6 @@ CXXFLAGS = \
 -isystem external \
 -isystem external/ktx/include \
 -isystem external/ktx/other_include \
--I$(VULKAN_SDK)/Include \
 -DVK_NO_PROTOTYPES
 
 LDFLAGS = \
