@@ -7,8 +7,10 @@ void Scene::add_object_to_scene(Object* object) {
 }
 
 glm::mat4 Scene::view_matrix() const {
-    glm::mat4 camera_transform =
-        model_matrix_from_pos_and_rot(cam_pos, cam_rot);
+    glm::mat4 camera_transform = glm::translate(
+        glm::mat4(1.0f),
+        cam_pos
+    ) * glm::mat4_cast(cam_orientation);
 
     return glm::inverse(camera_transform);
 }
