@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "VGL/vk_check.hpp"
-#include "math.h"
+#include "VGL/math.h"
 
 struct Vertex {
     glm::vec3 pos;

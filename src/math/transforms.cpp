@@ -1,4 +1,4 @@
-#include "math.h"
+#include "VGL/math.h"
 
 glm::mat4 model_matrix_from_pos_and_rot(glm::vec3 pos, glm::vec3 rot) {
     glm::mat4 model = glm::mat4(1.0f);

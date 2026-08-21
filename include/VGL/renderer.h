@@ -22,7 +22,7 @@
 #include "VGL/sdl.hpp"
 #include "VGL/volk.hpp"
 #include "VGL/object.h"
-#include "math.h"
+#include "VGL/math.h"
 
 struct PushConstants {
     VkDeviceAddress shader_data_addrress;
