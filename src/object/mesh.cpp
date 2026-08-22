@@ -29,7 +29,7 @@ Mesh::Mesh(std::string path) {
 }
 
 Mesh::Mesh(MeshData mesh_data) {
-    data = mesh_data;
+    data = std::move(mesh_data);
 }
 
 void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
