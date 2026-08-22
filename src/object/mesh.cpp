@@ -30,6 +30,7 @@ Mesh::Mesh(std::string path) {
 
 Mesh::Mesh(MeshData mesh_data) {
     data = std::move(mesh_data);
+    index_count = static_cast<VkDeviceSize>(data.indices.size());
 }
 
 void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
