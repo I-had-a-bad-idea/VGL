@@ -30,6 +30,15 @@ Mesh::Mesh(std::string path) {
 
 Mesh::Mesh(MeshData mesh_data) {
     data = std::move(mesh_data);
+    
+    // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
+    for (auto& vertex : data.vertices) {
+        vertex.pos.y = -vertex.pos.y;
+        vertex.normal.y = -vertex.normal.y;
+        vertex.uv.y = 1.0f - vertex.uv.y;
+    }
+
+
     index_count = static_cast<VkDeviceSize>(data.indices.size());
 }
 
