@@ -8,6 +8,7 @@ A vulkan graphics library (may be extended with compute in the future)
   - [Usage](#usage)
     - [Axes](#axes)
     - [Example file](#example-file)
+  - [Loading meshes directly from mesh data](#loading-meshes-directly-from-mesh-data)
   - [Near and far plane](#near-and-far-plane)
   - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
 
@@ -200,6 +201,19 @@ int main() {
     return 0;
 }
 
+```
+
+## Loading meshes directly from mesh data
+Instead of loading meshes from `.obj` files, you can also load them directly from generated MeshData.
+Simply fill the MeshData and then call `renderer.load_mesh(mesh_data);`.
+
+
+```cpp
+class MeshData {
+    public:
+        std::vector<Vertex> vertices {};
+        std::vector<uint32_t> indices {};
+};
 ```
 
 ## Near and far plane
