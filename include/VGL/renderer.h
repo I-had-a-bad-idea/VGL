@@ -42,6 +42,7 @@ class Scene {
         std::unordered_map<Shader*, std::unordered_map<Mesh*, std::vector<Object*>>> objects_by_mesh_by_shader;
 
         void add_object_to_scene(Object* object);
+        void remove_object_from_scene(Object* object);
 
         glm::mat4 view_matrix() const; 
 };
