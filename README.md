@@ -75,6 +75,8 @@ int main() {
     scene.add_object_to_scene(&monkey_up);
     scene.add_object_to_scene(&monkey_down);
 
+    scene.cam_pos = glm::vec3(0.0f, 0.0f, 10.0f);
+
     glm::vec3 camera_velocity(0.0f);
     float move_speed = 5.0f;
     float mouse_sensitivity = 0.0025f;
