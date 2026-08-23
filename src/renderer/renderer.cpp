@@ -314,12 +314,15 @@ Shader Renderer::load_shader(std::string filepath) {
 }
 
 void Renderer::destroy_mesh(Mesh mesh) {
+	vk_check(vkDeviceWaitIdle(device));
     mesh.destroy(allocator);
 }
 void Renderer::destroy_texture(Texture texture) {
+    vk_check(vkDeviceWaitIdle(device));
     texture.destroy(device, allocator);
 }
 void Renderer::destroy_shader(Shader shader) {
+    vk_check(vkDeviceWaitIdle(device));
     shader.destroy(device);
 }
 
