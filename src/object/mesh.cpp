@@ -22,16 +22,29 @@ Mesh::Mesh(std::string path) {
             .normal = {attrib.normals[index.normal_index * 3], -attrib.normals[index.normal_index * 3 + 1], attrib.normals[index.normal_index * 3 + 2]},
             .uv = {attrib.texcoords[index.texcoord_index * 2], 1.0 - attrib.texcoords[index.texcoord_index * 2 + 1]}
         };
-        vertices.push_back(v);
-        indices.push_back(indices.size());
+        data.vertices.push_back(v);
+        data.indices.push_back(data.indices.size());
     }
     // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
 }
 
+Mesh::Mesh(MeshData mesh_data) {
+    data = std::move(mesh_data);
+    
+    // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
+    for (auto& vertex : data.vertices) {
+        vertex.pos.y = -vertex.pos.y;
+        vertex.normal.y = -vertex.normal.y;
+        vertex.uv.y = 1.0f - vertex.uv.y;
+    }
+
+
+    index_count = static_cast<VkDeviceSize>(data.indices.size());
+}
 
 void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
-    v_buffer_size = VkDeviceSize {sizeof(Vertex) * vertices.size()};
-    VkDeviceSize i_buffer_size {sizeof(uint16_t) * indices.size()};
+    v_buffer_size = VkDeviceSize {sizeof(Vertex) * data.vertices.size()};
+    VkDeviceSize i_buffer_size {sizeof(uint32_t) * data.indices.size()};
 
     VkBufferCreateInfo buffer_CI {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
@@ -48,8 +61,8 @@ void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
     vk_check(vmaCreateBuffer(allocator, &buffer_CI, &v_buffer_alloc_CI, &v_buffer, &v_buffer_allocation, &v_buffer_alloc_info));
     
     // copy data into buffer
-    memcpy(v_buffer_alloc_info.pMappedData, vertices.data(), v_buffer_size);
-    memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, indices.data(), i_buffer_size);
+    memcpy(v_buffer_alloc_info.pMappedData, data.vertices.data(), v_buffer_size);
+    memcpy(((char*)v_buffer_alloc_info.pMappedData) + v_buffer_size, data.indices.data(), i_buffer_size);
 }
 
 void Mesh::destroy(VmaAllocator allocator) {
