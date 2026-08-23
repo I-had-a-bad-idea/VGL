@@ -149,6 +149,9 @@ int main() {
         }
     }
 
+    // If you plan on using the scene, but want to delete an object
+    scene.remove_object_from_scene(&monkey); // only removes the object reference from the scene, does not delete the object
+
     // Destroy resources (you are fully responsible for the objects)
     renderer.destroy_mesh(monkey_mesh);
     renderer.destroy_texture(gravel_texture);
