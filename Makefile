@@ -11,6 +11,8 @@ CFLAGS = \
 -I$(VULKAN_SDK)/Include
 
 CXXFLAGS = \
+-O3 \
+-DNDEBUG \
 -std=c++20 \
 -Iinclude \
 -isystem include/ktx/include \
