@@ -81,16 +81,30 @@ void Renderer::render_scene(const Scene& scene) {
     shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, scene.near_plane, scene.far_plane);    
     // shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
     shader_data.view = scene.view_matrix();
-    for (size_t i = 0; i < scene.objects.size(); i++) {
-        if (i >= max_objects) {
-            std::cerr << "Warning: Maximum number of objects in scene exceeded. Max: " << max_objects << ", Current: " << scene.objects.size() << std::endl;
-            break;
+    uint32_t object_index = 0;
+    for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
+        for (const auto& [mesh, objects] : meshes) {
+            for (const Object* object : objects) {
+                if (object_index >= max_objects) {
+                    
+                    size_t objects_in_scene = 0;
+                    for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
+                        for (const auto& [mesh, objects] : meshes) {
+                            objects_in_scene += objects.size();
+                        }
+                    }
+
+                    std::cerr << "Warning: Maximum number of objects in scene exceeded. Max: "
+                              << max_objects << ", Current: " << objects_in_scene << std::endl;
+                    break;
+                }
+
+                shader_data.objects[object_index].model = object->model_matrix();
+                shader_data.objects[object_index].texture_index = object->material->albedo->descriptor_index;
+                shader_data.objects[object_index].selected = object->selected;
+                ++object_index;
+            }
         }
-        
-        const Object* object = scene.objects[i];
-        shader_data.objects[i].model = object->model_matrix();
-        shader_data.objects[i].texture_index = object->material->albedo->descriptor_index;
-        shader_data.objects[i].selected = object->selected;
     }
 
     memcpy(shader_data_buffers[frame_index].allocation_info.pMappedData, &shader_data, sizeof(ShaderData)); // Copy shader data over
@@ -180,7 +194,7 @@ void Renderer::render_scene(const Scene& scene) {
     // std::cout << "Rendering scene with " << scene.objects.size() << " objects...\n";
     // For each shader do the pipeline
     // std::cout << "There are " << shader_to_objects.size() << " unique shaders in the scene\n";
-    uint32_t object_index = 0;
+    object_index = 0;
     for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
         // std::cout << "There are " << meshes.size() << " unique meshes in the scene\n";
         // bind resources (graphics pipeline, descriptor set)

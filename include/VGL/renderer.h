@@ -31,7 +31,6 @@ struct PushConstants {
 
 class Scene {
     public:
-        std::vector<Object*> objects;
         glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
         glm::vec3 cam_rot {0.0f, 0.0f, 0.0f};
         glm::quat cam_orientation {1.0f, 0.0f, 0.0f, 0.0f};

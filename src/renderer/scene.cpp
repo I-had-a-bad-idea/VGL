@@ -2,7 +2,6 @@
 
 
 void Scene::add_object_to_scene(Object* object) {
-    objects.push_back(object);
     objects_by_mesh_by_shader[object->material->shader][object->mesh].push_back(object);
 }
 
@@ -24,12 +23,6 @@ void Scene::remove_object_from_scene(Object* object) {
         if (it != objects_for_mesh.end()) {
             objects_for_mesh.erase(it); // Delete it
         }
-    }
-
-
-    auto it2 = std::find(objects.begin(), objects.end(), object); // Remove from main object list
-    if (it2 != objects.end()) {
-        objects.erase(it2);
     }
 }
 
