@@ -1,6 +1,6 @@
 #include "VGL/renderer.h"
 
-SDL_Window* Renderer::create_window(std::string name, int w, int h, bool capture_mouse) {
+SDL_Window* Renderer::create_window(std::string name, int w, int h, bool capture_mouse, SDL_Window* window) {
     if (name.length() == 0) {
         name = "VulkanGraphicsLib"; // Name fallback
     }
@@ -12,9 +12,16 @@ SDL_Window* Renderer::create_window(std::string name, int w, int h, bool capture
         h = 720u;
     }
 
-    SDL_Window* window = SDL_CreateWindow(name.c_str(), w, h, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
-    assert(window);
-
+    // check if window is usable, if not create a new one
+    if (window == nullptr) {
+        window = SDL_CreateWindow(name.c_str(), w, h, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
+        assert(window);
+    } else if (SDL_GetWindowFlags(window) & SDL_WINDOW_VULKAN == 0) {
+        std::cerr << "Provided SDL_Window is not Vulkan compatible. Creating a new window instead." << std::endl;
+        window = SDL_CreateWindow(name.c_str(), w, h, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
+        assert(window);
+    }
+    // else use the provided window, which is Vulkan compatible
     if (capture_mouse) {
         SDL_SetWindowRelativeMouseMode(window, capture_mouse);
     }
