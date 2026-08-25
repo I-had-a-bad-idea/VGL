@@ -10,6 +10,8 @@ A vulkan graphics library (may be extended with compute in the future)
     - [Example file](#example-file)
   - [Loading meshes directly from mesh data](#loading-meshes-directly-from-mesh-data)
   - [Near and far plane](#near-and-far-plane)
+  - [Using a custom SDL window](#using-a-custom-sdl-window)
+  - [Choosing the device](#choosing-the-device)
   - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
 
 
@@ -224,6 +226,17 @@ class MeshData {
 ## Near and far plane
 You can configure the near and far plane of the camera in the `Scene` class. The default values are 0.1f for the near plane and 32.0f for the far plane. You can change these values by setting the `near_plane` and `far_plane` members of the `Scene` class.
 
+## Using a custom SDL window
+You can use a custom SDL-Window. It has to be Vulkan compatible (simply use the `SDL_WINDOW_VULKAN` flag).
+To use your own window, pass it to the renderer, when creating it:
+
+```cpp
+Renderer renderer("Test", 1280, 720, true, your_window); // Create a renderer with window dimensions + capture mouse
+```
+
+## Choosing the device
+You can choose the device used, by passing the device index when creating the renderer.
+(device referes to the GPU you want to use, as some systems may have multiple GPUs).
 
 ## Licenses for textures under asses/Textures
 <Gravel 041> <Grass 005> from ambientCG.com, licensed under the Creative Commons CC0 1.0 Universal License.         
