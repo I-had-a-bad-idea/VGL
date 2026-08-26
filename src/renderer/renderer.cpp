@@ -78,7 +78,8 @@ void Renderer::render_scene(const Scene& scene) {
     vk_check_swapchain(vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_acquired_semaphores[frame_index], VK_NULL_HANDLE, &image_index));
     // std::cout << "Waited for fence and qcquired next swapchain image\n";
     // Update shader data
-    shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, scene.near_plane, scene.far_plane);    
+    shader_data.projection = glm::perspective(glm::radians(45.0f), (float)window_data.x / (float)window_data.y, scene.near_plane, scene.far_plane);
+    shader_data.projection[1][1] *= -1.0f;
     // shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
     shader_data.view = scene.view_matrix();
     uint32_t object_index = 0;
