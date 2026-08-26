@@ -121,7 +121,7 @@ int main() {
 
             if (event.type == SDL_EVENT_MOUSE_MOTION) {
                 float mouse_x = (float)event.motion.xrel;
-                float mouse_y = -(float)event.motion.yrel;
+                float mouse_y = (float)event.motion.yrel;
 
                 float next_pitch = glm::clamp(
                     pitch - mouse_y * mouse_sensitivity,

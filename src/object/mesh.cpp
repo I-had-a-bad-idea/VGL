@@ -18,23 +18,19 @@ Mesh::Mesh(std::string path) {
     //load vertex and index data
     for (auto& index : shapes[0].mesh.indices) {
         Vertex v{
-            .pos = {attrib.vertices[index.vertex_index * 3], -attrib.vertices[index.vertex_index * 3 + 1], attrib.vertices[index.vertex_index * 3 + 2]},
-            .normal = {attrib.normals[index.normal_index * 3], -attrib.normals[index.normal_index * 3 + 1], attrib.normals[index.normal_index * 3 + 2]},
+            .pos = {attrib.vertices[index.vertex_index * 3], attrib.vertices[index.vertex_index * 3 + 1], attrib.vertices[index.vertex_index * 3 + 2]},
+            .normal = {attrib.normals[index.normal_index * 3], attrib.normals[index.normal_index * 3 + 1], attrib.normals[index.normal_index * 3 + 2]},
             .uv = {attrib.texcoords[index.texcoord_index * 2], 1.0 - attrib.texcoords[index.texcoord_index * 2 + 1]}
         };
         data.vertices.push_back(v);
         data.indices.push_back(data.indices.size());
     }
-    // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
 }
 
 Mesh::Mesh(MeshData mesh_data) {
     data = std::move(mesh_data);
     
-    // y and v axis are flipped to accommodate for Vulkans coordinate system (+y down)
     for (auto& vertex : data.vertices) {
-        vertex.pos.y = -vertex.pos.y;
-        vertex.normal.y = -vertex.normal.y;
         vertex.uv.y = 1.0f - vertex.uv.y;
     }
 
