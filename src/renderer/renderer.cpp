@@ -87,6 +87,10 @@ void Renderer::render_scene(const Scene& scene) {
     for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
         for (const auto& [mesh, objects] : meshes) {
             for (const Object* object : objects) {
+                if (!object->visible) {
+                    continue;
+                }
+
                 if (object_index >= max_objects) {
                     
                     size_t objects_in_scene = 0;
@@ -215,7 +219,17 @@ void Renderer::render_scene(const Scene& scene) {
             vkCmdBindVertexBuffers(cb, 0, 1, &mesh->v_buffer, &v_offset);
             vkCmdBindIndexBuffer(cb, mesh->v_buffer, mesh->v_buffer_size, VK_INDEX_TYPE_UINT32);
             
-            uint32_t object_count = objects.size(); 
+            uint32_t object_count = 0;
+            for (const Object* object : objects) {
+                if (object->visible) { // only count visible objects
+                    ++object_count;
+                }
+            }
+
+            if (object_count == 0) { // if no visible objects for mesh just skip
+                continue;
+            }
+
             // Finally actually draw
             vkCmdDrawIndexed(
                 cb,

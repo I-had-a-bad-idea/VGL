@@ -102,6 +102,8 @@ class Object {
         glm::vec3 position;
         glm::vec3 rotation;
 
+        bool visible = true;
+
         uint32_t selected;
         Object(Mesh* mesh, Material* material, glm::vec3 position, glm::vec3 rotation);
 
