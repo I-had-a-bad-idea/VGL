@@ -52,7 +52,7 @@ public:
     static constexpr uint32_t max_textures = 4096;
     static constexpr uint32_t max_objects = 4096;
 
-    Renderer(std::string name, int w, int h, bool capture_mouse);
+    Renderer(std::string name, int w, int h, bool capture_mouse, SDL_Window* window = nullptr, uint32_t preferred_device_index = UINT32_MAX);
 
     Mesh load_mesh(std::string filepath);
     Mesh load_mesh(MeshData mesh_data);
@@ -132,7 +132,7 @@ private:
     VkQueue get_device_queue(uint32_t queue_family);
 
     // Window / Surface
-    SDL_Window* create_window(std::string name, int w, int h, bool capture_mouse);
+    SDL_Window* create_window(std::string name, int w, int h, bool capture_mouse, SDL_Window* window = nullptr);
     WindowData create_vulkan_surface_for_window();
     VkSurfaceCapabilitiesKHR get_surface_properties();
     VkSwapchainKHR create_swapchain(VkSurfaceCapabilitiesKHR surface_caps);

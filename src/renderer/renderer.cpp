@@ -12,7 +12,7 @@ inline void Renderer::vk_check_swapchain(VkResult result) {
 	}
 }
 
-Renderer::Renderer(std::string name, int w, int h, bool capture_mouse) {
+Renderer::Renderer(std::string name, int w, int h, bool capture_mouse, SDL_Window* window = nullptr, uint32_t preferred_device_index = UINT32_MAX) {
     std::cout << "Initializing up SDL...\n";
     init_sdl();
     std::cout << "Initializing up Volk...\n";
@@ -24,7 +24,7 @@ Renderer::Renderer(std::string name, int w, int h, bool capture_mouse) {
 
     std::cout << "Getting physical device...\n";
     physical_devices = get_devices();
-    physical_device = select_device();
+    physical_device = select_device(preferred_device_index);
 
     std::cout << "Getting queue families...\n";
     std::vector<VkQueueFamilyProperties> queue_families = get_queue_families();
@@ -40,7 +40,7 @@ Renderer::Renderer(std::string name, int w, int h, bool capture_mouse) {
     setup_vma();
 
     std::cout << "Creating window...\n";
-    window = create_window(name, w, h, capture_mouse);
+    window = create_window(name, w, h, capture_mouse, window);
     window_data = create_vulkan_surface_for_window();
     surface_caps = get_surface_properties();
 
