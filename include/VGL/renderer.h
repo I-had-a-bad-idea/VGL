@@ -34,6 +34,7 @@ class Scene {
         glm::vec3 cam_pos {0.0f, 0.0f, -6.0f};
         glm::vec3 cam_rot {0.0f, 0.0f, 0.0f};
         glm::quat cam_orientation {1.0f, 0.0f, 0.0f, 0.0f};
+        glm::vec3 light_pos {0.0f, 100.0f, 10.0f};
 
         float near_plane {0.1f};
         float far_plane {32.0f};
@@ -83,7 +84,7 @@ private:
     struct ShaderData {
         glm::mat4 projection;
         glm::mat4 view;
-        glm::vec4 lightPos{ 0.0f, -10.0f, 10.0f, 0.0f };
+        glm::vec4 lightPos{ 0.0f, 100.0f, 10.0f, 0.0f };
         std::array<ObjectData, max_objects> objects;
     };
 

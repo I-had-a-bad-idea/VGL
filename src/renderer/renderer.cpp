@@ -82,6 +82,7 @@ void Renderer::render_scene(const Scene& scene) {
     shader_data.projection[1][1] *= -1.0f;
     // shader_data.view = glm::translate(glm::mat4(1.0f), scene.cam_pos);
     shader_data.view = scene.view_matrix();
+    shader_data.lightPos = glm::vec4(scene.light_pos, 0.0f);
     uint32_t object_index = 0;
     for (const auto& [shader, meshes] : scene.objects_by_mesh_by_shader) {
         for (const auto& [mesh, objects] : meshes) {
