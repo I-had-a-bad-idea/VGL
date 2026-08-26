@@ -9,6 +9,7 @@ A vulkan graphics library (may be extended with compute in the future)
     - [Axes](#axes)
     - [Example file](#example-file)
     - [Configuring the light](#configuring-the-light)
+  - [Configuring the clear color](#configuring-the-clear-color)
     - [Object visibility](#object-visibility)
     - [Loading meshes directly from mesh data](#loading-meshes-directly-from-mesh-data)
     - [Near and far plane](#near-and-far-plane)
@@ -215,8 +216,10 @@ int main() {
 ### Configuring the light
 Simply change `scene.light_pos`.
 
-### Object visibility
+## Configuring the clear color
+If you dont want it to be black, just set it via `scene.clear_color`
 
+### Object visibility
 You can hide objects, by setting their `visible` member to false.
 
 ### Loading meshes directly from mesh data

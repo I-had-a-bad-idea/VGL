@@ -35,6 +35,7 @@ class Scene {
         glm::vec3 cam_rot {0.0f, 0.0f, 0.0f};
         glm::quat cam_orientation {1.0f, 0.0f, 0.0f, 0.0f};
         glm::vec3 light_pos {0.0f, 100.0f, 10.0f};
+        glm::vec4 clear_color {0.0f, 0.0f, 0.0f, 0.0f};
 
         float near_plane {0.1f};
         float far_plane {32.0f};

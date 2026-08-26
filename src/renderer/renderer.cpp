@@ -164,7 +164,7 @@ void Renderer::render_scene(const Scene& scene) {
         .imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
         .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
         .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-        .clearValue {.color{0.0f, 0.0f, 0.0f, 0.0f}}
+        .clearValue {.color{scene.clear_color.r, scene.clear_color.g, scene.clear_color.b, scene.clear_color.a}}
     };
     VkRenderingAttachmentInfo depth_attachment_info {
         .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
