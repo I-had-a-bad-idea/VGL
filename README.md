@@ -18,6 +18,7 @@ A vulkan graphics library (may be extended with compute in the future)
     - [Choosing the device](#choosing-the-device)
   - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
 
+<img src="images/monkeys.png" alt="Image" width="700" height="400">
 
 ## Including the library
 1. Download the [latest release](https://github.com/I-had-a-bad-idea/VGL/releases/latest)
