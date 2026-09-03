@@ -42,6 +42,11 @@ void Mesh::load_mesh_into_buffer(VmaAllocator allocator) {
     v_buffer_size = VkDeviceSize {sizeof(Vertex) * data.vertices.size()};
     VkDeviceSize i_buffer_size {sizeof(uint32_t) * data.indices.size()};
 
+    if (v_buffer_size == 0 || i_buffer_size == 0) {
+        std::cerr << "Error: Mesh has no vertices or indices.\n";
+        return;
+    }
+
     VkBufferCreateInfo buffer_CI {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
         .size = v_buffer_size + i_buffer_size, // since we combine both into one buffer
