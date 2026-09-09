@@ -1,6 +1,6 @@
 #include "VGL/math.h"
 
-static Frustum extract_frustum(const glm::mat4& vp) {
+Frustum extract_frustum(const glm::mat4& vp) {
     Frustum f;
 
     // Left
@@ -59,7 +59,7 @@ static Frustum extract_frustum(const glm::mat4& vp) {
     return f;
 }
 
-static bool sphere_in_frustum(const Frustum& frustum, const glm::vec3& center, float radius) {
+bool sphere_in_frustum(const Frustum& frustum, const glm::vec3& center, float radius) {
     for (const glm::vec4& plane : frustum.planes) {
         float distance = glm::dot(glm::vec3(plane), center) + plane.w;
 

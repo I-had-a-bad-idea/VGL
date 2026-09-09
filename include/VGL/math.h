@@ -17,5 +17,5 @@ glm::mat4 model_matrix_from_pos_and_rot(glm::vec3 pos, glm::vec3 rot);
 struct Frustum {
     glm::vec4 planes[6];
 };
-static Frustum extract_frustum(const glm::mat4& vp);
-static bool sphere_in_frustum(const Frustum& frustum, const glm::vec3& center, float radius);
+Frustum extract_frustum(const glm::mat4& vp);
+bool sphere_in_frustum(const Frustum& frustum, const glm::vec3& center, float radius);
