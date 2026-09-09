@@ -9,13 +9,14 @@ A vulkan graphics library (may be extended with compute in the future)
     - [Axes](#axes)
     - [Example file](#example-file)
     - [Configuring the light](#configuring-the-light)
-  - [Configuring the clear color](#configuring-the-clear-color)
+    - [Configuring the clear color](#configuring-the-clear-color)
     - [Object visibility](#object-visibility)
     - [Loading meshes directly from mesh data](#loading-meshes-directly-from-mesh-data)
     - [Near and far plane](#near-and-far-plane)
     - [Using a custom SDL window](#using-a-custom-sdl-window)
     - [Wireframe mode](#wireframe-mode)
     - [Choosing the device](#choosing-the-device)
+    - [Camera frustum](#camera-frustum)
   - [Licenses for textures under asses/Textures](#licenses-for-textures-under-assestextures)
 
 <img src="images/monkeys.png" alt="Image" width="700" height="400">
@@ -218,7 +219,7 @@ int main() {
 ### Configuring the light
 Simply change `scene.light_pos`.
 
-## Configuring the clear color
+### Configuring the clear color
 If you dont want it to be black, just set it via `scene.clear_color`
 
 ### Object visibility
@@ -262,6 +263,16 @@ You can choose the device used, by passing the device index when creating the re
 
 ```cpp
 Renderer renderer("Test", 1280, 720, false, nullptr, false, 1); // Create a renderer with specified device
+```
+
+### Camera frustum
+The camera frustum can be found under `scene.frustum`. It gets updated each frame by the renderer.      
+If you want to do frustum culling, you can also use the `sphere_in_frustum()` function:
+
+```cpp
+#include <VGL/math.h>
+
+bool in_frustum = sphere_in_frustum(scene.frustum, center, radius)
 ```
 
 ## Licenses for textures under asses/Textures
